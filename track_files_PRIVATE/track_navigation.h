@@ -10,16 +10,12 @@
 #define LOOK_LEFT '<'
 #define LOOK_RIGHT '>'
 
-// Player struct
-typedef struct {
-    int x, y;  // Player position
-    char direction;  // Current orientation ('^', 'v', '<', '>')
-} Player;
 
 // Function declarations
 void print_grid();
 void rotate_left();
 void rotate_right();
 void move_forward();
+void navigate_to_point(Car *car, Location target_location);
 
 #endif // TRACK_NAVIGATION_H

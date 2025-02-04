@@ -4,6 +4,8 @@
 #include <unistd.h> // For usleep (smooth screen updates)
 #include "track_navigation.h"
 
+#include "track_detection.h"
+
 // Function to print the grid with the car's position
 void print_grid() {
     // Clear screen properly
@@ -66,4 +68,47 @@ void move_forward() {
         current_car.current_location.x = new_x;
         current_car.current_location.y = new_y;
     }
+}
+
+// Helper function to calculate Manhattan Distance
+int calculate_distance(Location a, Location b) {
+    return abs(a.x - b.x) + abs(a.y - b.y);
+}
+
+// Function to move towards a target location
+void navigate_to_point(Car *car, Location target_location) {
+    printf("Navigating from (%d, %d) to (%d, %d)\n",
+           car->current_location.x, car->current_location.y,
+           target_location.x, target_location.y);
+
+    // While the car has not reached the destination
+    while (car->current_location.x != target_location.x || car->current_location.y != target_location.y) {
+
+        // Update sensor readings before each move
+        update_ultrasonic_sensors();
+
+        // Move in X direction first if needed
+        if (car->current_location.x < target_location.x && !ultrasonic_sensors[0]) {
+            move_forward(car);
+        } else if (car->current_location.x > target_location.x && !ultrasonic_sensors[0]) {
+            move_forward(car);
+        }
+        // Move in Y direction next if needed
+        else if (car->current_location.y < target_location.y && !ultrasonic_sensors[1]) {
+            rotate_left(car);
+            move_forward(car);
+        } else if (car->current_location.y > target_location.y && !ultrasonic_sensors[2]) {
+            rotate_right(car);
+            move_forward(car);
+        }
+        // If blocked, rotate and find another way
+        else {
+            rotate_right(car);
+        }
+
+        // Print car's current position after each move
+        printf("Current Location: (%d, %d)\n", car->current_location.x, car->current_location.y);
+    }
+
+    printf("Arrived at destination (%d, %d)!\n", target_location.x, target_location.y);
 }

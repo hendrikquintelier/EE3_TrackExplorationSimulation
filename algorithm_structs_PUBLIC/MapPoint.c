@@ -85,12 +85,61 @@ void print_map_point(const MapPoint *mp) {
 }
 
 // Function to check if a MapPoint with current_location already exists
-int check_map_point_already_exists() {
+MapPoint *check_map_point_already_exists() {
     for (int i = 0; i < num_map_points_all; i++) {
         if (map_points_all[i].location.x == current_car.current_location.x &&
             map_points_all[i].location.y == current_car.current_location.y) {
-            return 1;  // MapPoint already exists
+            return &map_points_all[i];  // Return pointer to the existing MapPoint
             }
     }
-    return 0;  // No MapPoint found at current_location
+    return NULL;  // Return NULL if no MapPoint found
+}
+
+
+// Function to update an existing MapPoint and link it with the most recently added MapPoint
+void update_existing_mappoint(MapPoint *existing_point) {
+    if (num_map_points_all < 2) {
+        printf("Not enough MapPoints to establish a connection.\n");
+        return;
+    }
+
+    // The latest added MapPoint
+    MapPoint *latest_point = &map_points_all[num_map_points_all - 1];
+
+    printf("Connecting MapPoint at (%d, %d) with the latest MapPoint at (%d, %d)\n",
+           existing_point->location.x, existing_point->location.y,
+           latest_point->location.x, latest_point->location.y);
+
+    // Determine the direction of movement from the existing point to the latest point
+    int dx = latest_point->location.x - existing_point->location.x;
+    int dy = latest_point->location.y - existing_point->location.y;
+
+    int direction_existing = -1;
+    int direction_latest = -1;
+
+    if (dx == 1 && dy == 0) {
+        direction_existing = 0;  // Forward
+        direction_latest = 1;    // Backward (relative)
+    } else if (dx == -1 && dy == 0) {
+        direction_existing = 1;  // Backward
+        direction_latest = 0;    // Forward (relative)
+    } else if (dx == 0 && dy == 1) {
+        direction_existing = 2;  // Right
+        direction_latest = 3;    // Left (relative)
+    } else if (dx == 0 && dy == -1) {
+        direction_existing = 3;  // Left
+        direction_latest = 2;    // Right (relative)
+    }
+
+    // Ensure a valid connection
+    if (direction_existing != -1 && direction_latest != -1) {
+        existing_point->paths[direction_existing].end = latest_point;
+        latest_point->paths[direction_latest].end = existing_point;
+
+        printf("Path established between (%d, %d) and (%d, %d)\n",
+               existing_point->location.x, existing_point->location.y,
+               latest_point->location.x, latest_point->location.y);
+    } else {
+        printf("Error: Unable to determine path direction!\n");
+    }
 }

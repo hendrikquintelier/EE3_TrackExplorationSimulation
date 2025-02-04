@@ -1,4 +1,21 @@
 # ninja log v6
 12	278	7603248019390503	CMakeFiles/untitled.dir/main.c.obj	b9938cbd3dc2bd74
-12	124	7602944117993772	CMakeFiles/untitled.dir/globals.c.obj	c657a8cde7f10d4e
 279	753	7603248022059913	untitled.exe	942ed04af2f5a7f7
+12	124	7602944117993772	CMakeFiles/untitled.dir/globals.c.obj	c657a8cde7f10d4e
+6	332	7604081783429296	build.ninja	125d9083aac32581
+6	143	7604081784189351	CMakeFiles/untitled.dir/main.c.obj	3049cd3dbec6bff9
+46	158	7604081784605905	CMakeFiles/untitled.dir/track_files_PRIVATE/track_generation.c.obj	f85ec2c275cb41d9
+13	163	7604081784264396	CMakeFiles/untitled.dir/globals.c.obj	37e33ad86a502648
+21	173	7604081784354454	CMakeFiles/untitled.dir/algorithm_structs_PUBLIC/FundamentalPath.c.obj	7dbf6fcfa5fcec61
+38	176	7604081784515059	CMakeFiles/untitled.dir/algorithm_structs_PUBLIC/Path.c.obj	f3c9d06663df77ca
+29	183	7604081784424457	CMakeFiles/untitled.dir/algorithm_structs_PUBLIC/MapPoint.c.obj	d29ae96ad5ed9158
+75	190	7604081784885895	CMakeFiles/untitled.dir/track_files_PRIVATE/track_detection.c.obj	c3f4114ed8924b82
+55	213	7604081784685903	CMakeFiles/untitled.dir/track_files_PRIVATE/track_navigation.c.obj	13b6c7e8c75b9ce9
+65	218	7604081784785905	CMakeFiles/untitled.dir/exploration.c.obj	1ef86d60364d6357
+218	381	7604081786317839	untitled.exe	7d31978426d5061f
+5	119	7604082356529107	CMakeFiles/untitled.dir/exploration.c.obj	1ef86d60364d6357
+120	277	7604082357667625	untitled.exe	7d31978426d5061f
+5	112	7604083287714840	CMakeFiles/untitled.dir/exploration.c.obj	1ef86d60364d6357
+113	259	7604083288791547	untitled.exe	7d31978426d5061f
+5	121	7604084614074990	CMakeFiles/untitled.dir/exploration.c.obj	1ef86d60364d6357
+122	289	7604084615246231	untitled.exe	7d31978426d5061f

@@ -12,7 +12,6 @@ add_executable(untitled main.c
         algorithm_structs_PUBLIC/FundamentalPath.c
         algorithm_structs_PUBLIC/MapPoint.c
         algorithm_structs_PUBLIC/Path.c
-        algorithm_functions.c
         track_files_PRIVATE/track_generation.c
         track_files_PRIVATE/track_generation.h
         track_files_PRIVATE/track_navigation.c

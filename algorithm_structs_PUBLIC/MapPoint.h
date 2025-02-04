@@ -29,6 +29,9 @@ void add_map_point_tbd(MapPoint *mp);
 int mp_has_unexplored_paths(MapPoint *mp);
 
 // Function to check if a MapPoint with current_location already exists
-int check_map_point_already_exists();
+MapPoint *check_map_point_already_exists();
+
+// Function to update an existing MapPoint and link it with the most recently added MapPoint
+void update_existing_mappoint(MapPoint *existing_point);
 
 #endif // MAPPOINT_H

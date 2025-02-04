@@ -11,11 +11,11 @@
 // Check if the car is at a MapPoint
 int is_map_point() {
     int options = 0;
-    if (!ultrasonic_sensors[0]) options++; // Can move forward
-    if (!ultrasonic_sensors[1]) options++; // Can move left
-    if (!ultrasonic_sensors[2]) options++; // Can move right
 
-    return (options > 1);  // More than one option = MapPoint
+    if (ultrasonic_sensors[1]) options++; // Can move left
+    if (ultrasonic_sensors[2]) options++; // Can move right
+
+    return (options > 0);  // More than one option = MapPoint
 }
 
 // Print all MapPoint information for debugging
@@ -30,7 +30,7 @@ void print_all_map_points() {
 
 // Decide the next move based on ultrasonic sensors
 void decide_next_move() {
-    if (ultrasonic_sensors[0]) {
+     if (ultrasonic_sensors[0]) {
         move_forward(&current_car);
         return;
     }

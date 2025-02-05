@@ -2,14 +2,7 @@
 #define TRACK_NAVIGATION_H
 
 #include "track_generation.h"
-
-// Symbols for navigation
-#define PLAYER 'P'
-#define LOOK_UP '^'
-#define LOOK_DOWN 'v'
-#define LOOK_LEFT '<'
-#define LOOK_RIGHT '>'
-
+#include "track_detection.h"
 
 // Function declarations
 void print_grid();

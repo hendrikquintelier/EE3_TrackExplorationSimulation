@@ -103,6 +103,12 @@ build CMakeFiles/untitled.dir/track_files_PRIVATE/track_detection.c.obj: C_COMPI
   OBJECT_DIR = CMakeFiles\untitled.dir
   OBJECT_FILE_DIR = CMakeFiles\untitled.dir\track_files_PRIVATE
 
+build CMakeFiles/untitled.dir/direction.c.obj: C_COMPILER__untitled_unscanned_Debug C$:/Users/Hendrik$ Quintelier/CLionProjects/EE3_TrackExplorationSimulation/direction.c || cmake_object_order_depends_target_untitled
+  DEP_FILE = CMakeFiles\untitled.dir\direction.c.obj.d
+  FLAGS = -g -std=gnu11 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\untitled.dir
+  OBJECT_FILE_DIR = CMakeFiles\untitled.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target untitled
@@ -111,7 +117,7 @@ build CMakeFiles/untitled.dir/track_files_PRIVATE/track_detection.c.obj: C_COMPI
 #############################################
 # Link the executable untitled.exe
 
-build untitled.exe: C_EXECUTABLE_LINKER__untitled_Debug CMakeFiles/untitled.dir/main.c.obj CMakeFiles/untitled.dir/globals.c.obj CMakeFiles/untitled.dir/algorithm_structs_PUBLIC/FundamentalPath.c.obj CMakeFiles/untitled.dir/algorithm_structs_PUBLIC/MapPoint.c.obj CMakeFiles/untitled.dir/algorithm_structs_PUBLIC/Path.c.obj CMakeFiles/untitled.dir/track_files_PRIVATE/track_generation.c.obj CMakeFiles/untitled.dir/track_files_PRIVATE/track_navigation.c.obj CMakeFiles/untitled.dir/exploration.c.obj CMakeFiles/untitled.dir/track_files_PRIVATE/track_detection.c.obj
+build untitled.exe: C_EXECUTABLE_LINKER__untitled_Debug CMakeFiles/untitled.dir/main.c.obj CMakeFiles/untitled.dir/globals.c.obj CMakeFiles/untitled.dir/algorithm_structs_PUBLIC/FundamentalPath.c.obj CMakeFiles/untitled.dir/algorithm_structs_PUBLIC/MapPoint.c.obj CMakeFiles/untitled.dir/algorithm_structs_PUBLIC/Path.c.obj CMakeFiles/untitled.dir/track_files_PRIVATE/track_generation.c.obj CMakeFiles/untitled.dir/track_files_PRIVATE/track_navigation.c.obj CMakeFiles/untitled.dir/exploration.c.obj CMakeFiles/untitled.dir/track_files_PRIVATE/track_detection.c.obj CMakeFiles/untitled.dir/direction.c.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\untitled.dir

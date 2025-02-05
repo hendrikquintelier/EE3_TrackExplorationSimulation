@@ -19,18 +19,41 @@ void initialize_map_point(MapPoint *mp, Location location, bool UltraSonicDetect
     mp->id = map_point_counter++;
     mp->location = location;
 
-    // Count and initialize paths
-    int trueCount = 0;
+    // Determine number of paths based on detected options
+    int pathCount = 0;
     for (int i = 0; i < 3; ++i) {
-        if (UltraSonicDetection[i]) {
-            trueCount++;
-        }
+        if (UltraSonicDetection[i]) pathCount++;
+    }
+    mp->numberOfPaths = pathCount;
+
+    // Allocate memory for paths
+    mp->paths = malloc(pathCount * sizeof(FundamentalPath));
+    if (!mp->paths) {
+        perror("Failed to allocate memory for FundamentalPaths");
+        exit(EXIT_FAILURE);
     }
 
-    mp->numberOfPaths = trueCount;
+    // Initialize paths and assign directions immediately
+    int pathIndex = 0;
+    for (int i = 0; i < 3; ++i) {
+        if (UltraSonicDetection[i]) {
+            initialize_fundamental_path(&mp->paths[pathIndex], mp, 0);
 
-    for (int i = 0; i < trueCount; ++i) {
-        initialize_fundamental_path(&mp->paths[i], mp, 0);
+            // Assign the correct direction based on the detected index
+            switch (i) {
+                case 0: // Forward
+                    mp->paths[pathIndex].direction = current_car.current_orientation;
+                    break;
+                case 1: // Left
+                    mp->paths[pathIndex].direction = turn_left(current_car.current_orientation);
+                    break;
+                case 2: // Right
+                    mp->paths[pathIndex].direction = turn_right(current_car.current_orientation);
+                    break;
+            }
+
+            pathIndex++; // Move to the next available slot
+        }
     }
 
     // Add to global array map_points_all
@@ -42,12 +65,15 @@ void initialize_map_point(MapPoint *mp, Location location, bool UltraSonicDetect
             exit(EXIT_FAILURE);
         }
     }
-    map_points_all[num_map_points_all++] = *mp;
+    map_points_all[num_map_points_all++] = mp;
+
 
     if (mp_has_unexplored_paths(mp)) {
         add_map_point_tbd(mp);
     }
 }
+
+
 
 // Function to add a MapPoint to the "To Be Discovered" list
 void add_map_point_tbd(MapPoint *mp) {
@@ -59,7 +85,7 @@ void add_map_point_tbd(MapPoint *mp) {
             exit(EXIT_FAILURE);
         }
     }
-    map_points_tbd[num_map_points_tbd++] = *mp;
+    map_points_tbd[num_map_points_tbd++] = mp;
 }
 
 // Check if a mappoint has paths with an unknown endpoint
@@ -74,22 +100,39 @@ int mp_has_unexplored_paths(MapPoint *mp) {
 
 // Function that prints the info stored in the map point
 void print_map_point(const MapPoint *mp) {
-    printf("MapPoint ID: %d\n", mp->id);
+    if (!mp) {
+        printf("Error: Null MapPoint passed to print_map_point.\n");
+        return;
+    }
+
+    printf("\n========== MapPoint Info ==========\n");
+    printf("ID: %d\n", mp->id);
     printf("Location: (%d, %d)\n", mp->location.x, mp->location.y);
     printf("Number of Paths: %d\n", mp->numberOfPaths);
+    printf("------------------------------------\n");
 
     for (int i = 0; i < mp->numberOfPaths; ++i) {
-        printf("  Path %d -> End MapPoint ID: %s\n", i + 1,
-               mp->paths[i].end ? "Known" : "Unknown");
+        printf("  Path %d -> ", i + 1);
+
+        if (mp->paths[i].end) {  // ✅ Check if 'end' is NULL before accessing 'id'
+            printf("Leads to MapPoint ID: %d ", mp->paths[i].end->id);
+        } else {
+            printf("Leads to: Unknown ");
+        }
+
+        printf("[Direction: %s]\n", direction_to_string(mp->paths[i].direction));
     }
+
+    printf("====================================\n");
 }
+
 
 // Function to check if a MapPoint with current_location already exists
 MapPoint *check_map_point_already_exists() {
     for (int i = 0; i < num_map_points_all; i++) {
-        if (map_points_all[i].location.x == current_car.current_location.x &&
-            map_points_all[i].location.y == current_car.current_location.y) {
-            return &map_points_all[i];  // Return pointer to the existing MapPoint
+        if (map_points_all[i]->location.x == current_car.current_location.x &&
+            map_points_all[i]->location.y == current_car.current_location.y) {
+            return map_points_all[i];  // Return pointer to the existing MapPoint
             }
     }
     return NULL;  // Return NULL if no MapPoint found
@@ -104,7 +147,7 @@ void update_existing_mappoint(MapPoint *existing_point) {
     }
 
     // The latest added MapPoint
-    MapPoint *latest_point = &map_points_all[num_map_points_all - 1];
+    MapPoint *latest_point = map_points_all[num_map_points_all - 1];
 
     printf("Connecting MapPoint at (%d, %d) with the latest MapPoint at (%d, %d)\n",
            existing_point->location.x, existing_point->location.y,

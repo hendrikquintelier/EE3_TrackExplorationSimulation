@@ -9,8 +9,7 @@
 #define EMPTY '.'
 #define TRACK '#'
 #define START_FINISH 'S'
-#define LOOK_LEFT '<'
-#define LOOK_RIGHT '>'
+
 
 // Global grid, accessible by all files
 extern char grid[GRID_SIZE][GRID_SIZE];

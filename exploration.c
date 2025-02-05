@@ -7,6 +7,7 @@
 #include "track_files_PRIVATE/track_detection.h"
 #include "track_files_PRIVATE/track_navigation.h"
 #include "algorithm_structs_PUBLIC/MapPoint.h"
+#include "algorithm_structs_PUBLIC/FundamentalPath.h"
 
 // Check if the car is at a MapPoint
 int is_map_point() {
@@ -22,7 +23,7 @@ int is_map_point() {
 void print_all_map_points() {
     printf("\n===== MapPoint Debug Info =====\n");
     for (int i = 0; i < num_map_points_all; i++) {
-        print_map_point(&map_points_all[i]);
+        print_map_point(map_points_all[i]);
 
         printf("----------------------------------\n");
     }
@@ -74,6 +75,8 @@ void navigate_to_mappoint(MapPoint *destination) {
 
 // Main function to start automatic exploration
 void start_exploration() {
+    MapPoint *former_map_point = NULL; // Keep track of the previous MapPoint
+
     while (1) {
         print_grid(current_car);
 
@@ -91,9 +94,14 @@ void start_exploration() {
 
                 update_existing_mappoint(existing_point);
 
+                // Update the FundamentalPath between former and current (if not the first step)
+                if (former_map_point) {
+                    update_latest_fundamental_path(existing_point, former_map_point);
+                }
+
                 // Check for unexplored paths at the current MapPoint
                 int unexplored_paths = 0;
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < existing_point->numberOfPaths; i++) {
                     if (existing_point->paths[i].end == NULL) {
                         unexplored_paths++;
                     }
@@ -109,7 +117,7 @@ void start_exploration() {
                     if (next_point) {
                         navigate_to_mappoint(next_point);
                     } else {
-                        printf("Exploration complete!\n");
+                        printf("Exploration complete! No more points to be discovered.\n");
                         break;
                     }
                 }
@@ -124,10 +132,18 @@ void start_exploration() {
                 // Set location based on the car's current position
                 Location location = {current_car.current_location.x, current_car.current_location.y};
 
-                // Pass the ultrasonic detection array
+                // Pass the ultrasonic detection array to determine paths
                 initialize_map_point(new_map_point, location, ultrasonic_sensors);
 
                 printf("New MapPoint created at (%d, %d)\n", location.x, location.y);
+
+                // If this isn't the start position, create a FundamentalPath BACK to former MapPoint
+                if (former_map_point) {
+                    update_latest_fundamental_path(new_map_point, former_map_point);
+                }
+
+                // Set this as the latest known MapPoint
+                former_map_point = new_map_point;
             }
         }
 
@@ -138,7 +154,7 @@ void start_exploration() {
         print_all_map_points();
 
         // Stop when track is fully explored
-        if (num_map_points_tbd == 0 && num_all_fundamental_paths!=0) {
+        if (num_map_points_tbd == 0 && num_all_fundamental_paths != 0) {
             printf("Exploration complete!\n");
             break;
         }
@@ -146,3 +162,4 @@ void start_exploration() {
         usleep(500000);  // Slow down movement for realism
     }
 }
+

@@ -11,7 +11,7 @@ typedef struct Location {
 
 typedef struct MapPoint {
     int id;
-    FundamentalPath paths[4];
+    FundamentalPath *paths;
     int numberOfPaths;
     Location location;
 } MapPoint;

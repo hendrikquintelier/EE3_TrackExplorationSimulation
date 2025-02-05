@@ -19,4 +19,6 @@ add_executable(untitled main.c
         exploration.c
         exploration.h
         track_files_PRIVATE/track_detection.h
-        track_files_PRIVATE/track_detection.c)
+        track_files_PRIVATE/track_detection.c
+        direction.h
+        direction.c)

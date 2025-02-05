@@ -4,8 +4,8 @@
 #include "algorithm_structs_PUBLIC/MapPoint.h"
 #include "algorithm_structs_PUBLIC/FundamentalPath.h"
 
-extern MapPoint *map_points_tbd;
-extern MapPoint *map_points_all;
+extern MapPoint **map_points_tbd;
+extern MapPoint **map_points_all;
 extern FundamentalPath *all_fundamental_paths;
 
 extern int num_map_points_tbd, capacity_map_points_tbd;

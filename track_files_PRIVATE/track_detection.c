@@ -1,5 +1,5 @@
 #include "track_detection.h"
-
+#include "../direction.h"
 #include "track_navigation.h"
 
 // Function to update ultrasonic sensor readings
@@ -14,25 +14,25 @@ void update_ultrasonic_sensors() {
 
     // Determine sensor positions based on current direction
     switch (current_car.current_orientation) {
-        case LOOK_UP:
+        case NORTH:
             if (grid[y - 1][x] != TRACK && grid[y - 1][x] != START_FINISH) ultrasonic_sensors[0] = false;  // Forward
         if (grid[y][x - 1] != TRACK && grid[y][x - 1] != START_FINISH) ultrasonic_sensors[1] = false;  // Left
         if (grid[y][x + 1] != TRACK && grid[y][x + 1] != START_FINISH) ultrasonic_sensors[2] = false;  // Right
         break;
 
-        case LOOK_DOWN:
+        case SOUTH:
             if (grid[y + 1][x] != TRACK && grid[y + 1][x] != START_FINISH) ultrasonic_sensors[0] = false;
         if (grid[y][x + 1] != TRACK && grid[y][x + 1] != START_FINISH) ultrasonic_sensors[1] = false;
         if (grid[y][x - 1] != TRACK && grid[y][x - 1] != START_FINISH) ultrasonic_sensors[2] = false;
         break;
 
-        case LOOK_LEFT:
+        case WEST:
             if (grid[y][x - 1] != TRACK && grid[y][x - 1] != START_FINISH) ultrasonic_sensors[0] = false;
         if (grid[y + 1][x] != TRACK && grid[y + 1][x] != START_FINISH) ultrasonic_sensors[1] = false;
         if (grid[y - 1][x] != TRACK && grid[y - 1][x] != START_FINISH) ultrasonic_sensors[2] = false;
         break;
 
-        case LOOK_RIGHT:
+        case EAST:
             if (grid[y][x + 1] != TRACK && grid[y][x + 1] != START_FINISH) ultrasonic_sensors[0] = false;
         if (grid[y - 1][x] != TRACK && grid[y - 1][x] != START_FINISH) ultrasonic_sensors[1] = false;
         if (grid[y + 1][x] != TRACK && grid[y + 1][x] != START_FINISH) ultrasonic_sensors[2] = false;

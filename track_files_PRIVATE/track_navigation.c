@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <conio.h>  // Windows key input
+#include <conio.h>  // For Windows key input
 #include <unistd.h> // For usleep (smooth screen updates)
 #include "track_navigation.h"
+#include "../direction.h"
+
 
 // Function to print the grid with the car's position
 void print_grid() {
@@ -16,7 +18,7 @@ void print_grid() {
     for (int i = 0; i < GRID_SIZE; i++) {
         for (int j = 0; j < GRID_SIZE; j++) {
             if (i == current_car.current_location.y && j == current_car.current_location.x) {
-                printf("%c ", current_car.current_orientation);  // Show car's direction
+                printf("%c ", direction_to_symbol(current_car.current_orientation));  // Show car's direction
             } else {
                 printf("%c ", grid[i][j]);
             }
@@ -30,22 +32,12 @@ void print_grid() {
 
 // Function to rotate the car left
 void rotate_left() {
-    switch (current_car.current_orientation) {
-        case LOOK_UP: current_car.current_orientation = LOOK_LEFT; break;
-        case LOOK_DOWN: current_car.current_orientation = LOOK_RIGHT; break;
-        case LOOK_LEFT: current_car.current_orientation = LOOK_DOWN; break;
-        case LOOK_RIGHT: current_car.current_orientation = LOOK_UP; break;
-    }
+    current_car.current_orientation = turn_left(current_car.current_orientation);
 }
 
 // Function to rotate the car right
 void rotate_right() {
-    switch (current_car.current_orientation) {
-        case LOOK_UP: current_car.current_orientation = LOOK_RIGHT; break;
-        case LOOK_DOWN: current_car.current_orientation = LOOK_LEFT; break;
-        case LOOK_LEFT: current_car.current_orientation = LOOK_UP; break;
-        case LOOK_RIGHT: current_car.current_orientation = LOOK_DOWN; break;
-    }
+    current_car.current_orientation = turn_right(current_car.current_orientation);
 }
 
 // Function to move the car forward if possible
@@ -55,10 +47,10 @@ void move_forward() {
 
     // Determine next position based on direction
     switch (current_car.current_orientation) {
-        case LOOK_UP: new_y -= 1; break;
-        case LOOK_DOWN: new_y += 1; break;
-        case LOOK_LEFT: new_x -= 1; break;
-        case LOOK_RIGHT: new_x += 1; break;
+        case NORTH: new_y -= 1; break;
+        case SOUTH: new_y += 1; break;
+        case WEST:  new_x -= 1; break;
+        case EAST:  new_x += 1; break;
     }
 
     // Only move if the next position is part of the track
@@ -66,4 +58,44 @@ void move_forward() {
         current_car.current_location.x = new_x;
         current_car.current_location.y = new_y;
     }
+}
+
+// Helper function to calculate Manhattan Distance
+int calculate_distance(Location a, Location b) {
+    return abs(a.x - b.x) + abs(a.y - b.y);
+}
+
+// Function to move towards a target location
+void navigate_to_point(Car *car, Location target_location) {
+    printf("Navigating from (%d, %d) to (%d, %d)\n",
+           car->current_location.x, car->current_location.y,
+           target_location.x, target_location.y);
+
+    // While the car has not reached the destination
+    while (car->current_location.x != target_location.x || car->current_location.y != target_location.y) {
+
+        // Update sensor readings before each move
+        update_ultrasonic_sensors();
+
+        // Determine the best move based on current position and target
+        if (car->current_location.x < target_location.x && ultrasonic_sensors[0]) {
+            move_forward();
+        } else if (car->current_location.x > target_location.x && ultrasonic_sensors[0]) {
+            move_forward();
+        } else if (car->current_location.y < target_location.y && ultrasonic_sensors[1]) {
+            rotate_left();
+            move_forward();
+        } else if (car->current_location.y > target_location.y && ultrasonic_sensors[2]) {
+            rotate_right();
+            move_forward();
+        } else {
+            // If blocked, rotate and find another way
+            rotate_right();
+        }
+
+        // Print car's current position after each move
+        printf("Current Location: (%d, %d)\n", car->current_location.x, car->current_location.y);
+    }
+
+    printf("Arrived at destination (%d, %d)!\n", target_location.x, target_location.y);
 }

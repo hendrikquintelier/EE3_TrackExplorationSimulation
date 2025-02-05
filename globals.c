@@ -1,16 +1,16 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "globals.h"
-
+#include "direction.h"
 #include "track_files_PRIVATE/track_navigation.h"
 
 // Dynamic global arrays
-MapPoint *map_points_tbd = NULL;
-MapPoint *map_points_all = NULL;
+MapPoint **map_points_tbd = NULL;
+MapPoint **map_points_all = NULL;
 FundamentalPath *all_fundamental_paths = NULL;
 
 // Define global car
-Car current_car = {{4, 1}, LOOK_DOWN};  // Start at (4,1), facing down
+Car current_car = {{4, 1}, SOUTH};  // Start at (4,1), facing down
 
 // Define global ultrasonic sensors
 bool ultrasonic_sensors[3] = {true, true, true};  // {forward, left, right}

@@ -61,7 +61,8 @@
 				11,
 				13,
 				16,
-				18
+				18,
+				19
 			]
 		}
 	],
@@ -107,7 +108,8 @@
 				11,
 				13,
 				16,
-				18
+				18,
+				19
 			]
 		},
 		{
@@ -122,7 +124,8 @@
 				12,
 				14,
 				15,
-				17
+				17,
+				20
 			]
 		}
 	],
@@ -232,6 +235,17 @@
 			"compileGroupIndex" : 0,
 			"path" : "direction.c",
 			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "navigate.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "navigate.h",
+			"sourceGroupIndex" : 1
 		}
 	],
 	"type" : "EXECUTABLE"

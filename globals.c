@@ -7,7 +7,7 @@
 // Dynamic global arrays
 MapPoint **map_points_tbd = NULL;
 MapPoint **map_points_all = NULL;
-FundamentalPath *all_fundamental_paths = NULL;
+FundamentalPath **all_fundamental_paths = NULL;
 
 // Define global car
 Car current_car = {{4, 1}, SOUTH};  // Start at (4,1), facing down
@@ -36,6 +36,35 @@ void free_globals() {
     free(map_points_all);
     free(all_fundamental_paths);
 }
+
+void check_mappoints_tbd() {
+    for (int i = num_map_points_tbd - 1; i >= 0; i--) {
+        MapPoint *map_point_tbd = map_points_tbd[i];
+        if (!mp_has_unexplored_paths(map_point_tbd)) {
+            // Shift elements to the left to fill the gap
+            for (int j = i; j < num_map_points_tbd - 1; j++) {
+                map_points_tbd[j] = map_points_tbd[j + 1];
+            }
+            num_map_points_tbd--;
+
+        }
+    }
+}
+
+// Function to add a FundamentalPath to the global list
+void add_fundamental_path(FundamentalPath *path) {
+    // Reallocate memory to accommodate the new path
+    FundamentalPath **temp = realloc(all_fundamental_paths, (num_all_fundamental_paths + 1) * sizeof(FundamentalPath *));
+    if (!temp) {
+        perror("Failed to reallocate memory for all_fundamental_paths");
+        exit(EXIT_FAILURE);
+    }
+
+    // Update the global array and counter
+    all_fundamental_paths = temp;
+    all_fundamental_paths[num_all_fundamental_paths++] = path;
+}
+
 
 
 

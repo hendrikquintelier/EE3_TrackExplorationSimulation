@@ -21,4 +21,6 @@ add_executable(untitled main.c
         track_files_PRIVATE/track_detection.h
         track_files_PRIVATE/track_detection.c
         direction.h
-        direction.c)
+        direction.c
+        navigate.c
+        navigate.h)

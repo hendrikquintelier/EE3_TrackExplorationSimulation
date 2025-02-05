@@ -115,7 +115,7 @@ void print_map_point(const MapPoint *mp) {
         printf("  Path %d -> ", i + 1);
 
         if (mp->paths[i].end) {  // ✅ Check if 'end' is NULL before accessing 'id'
-            printf("Leads to MapPoint ID: %d ", mp->paths[i].end->id);
+            printf("Leads to MapPoint ID: %d , distance: %d ", mp->paths[i].end->id, mp->paths[i].distance);
         } else {
             printf("Leads to: Unknown ");
         }

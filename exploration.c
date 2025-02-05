@@ -82,6 +82,7 @@ void start_exploration() {
 
         // Update sensor readings before each move
         update_ultrasonic_sensors();
+        check_mappoints_tbd();
 
         // Check if the current position is a MapPoint
         if (is_map_point()) {

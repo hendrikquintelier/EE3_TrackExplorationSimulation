@@ -6,7 +6,7 @@
 
 extern MapPoint **map_points_tbd;
 extern MapPoint **map_points_all;
-extern FundamentalPath *all_fundamental_paths;
+extern FundamentalPath **all_fundamental_paths;
 
 extern int num_map_points_tbd, capacity_map_points_tbd;
 extern int num_map_points_all, capacity_map_points_all;
@@ -26,5 +26,6 @@ extern bool ultrasonic_sensors[3];
 
 void initialize_globals();
 void free_globals();
-
+void check_mappoints_tbd();
+void add_fundamental_path(FundamentalPath *path);
 #endif // GLOBALS_H

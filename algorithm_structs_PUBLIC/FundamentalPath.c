@@ -33,6 +33,8 @@ void initialize_fundamental_path(FundamentalPath *fp, MapPoint *start, float dis
     fp->distance = distance;
     fp->direction = NORTH;  // Default direction, updated later
 
+    add_fundamental_path(fp);
+
     printf("Initialized FundamentalPath ID: %d\n", fp->id);
 }
 
@@ -66,41 +68,80 @@ void update_latest_fundamental_path(MapPoint* current, MapPoint* former) {
         return;
     }
 
-    // Create and initialize path from former -> current
-    FundamentalPath* path_to_current = malloc(sizeof(FundamentalPath));
-    if (!path_to_current) {
-        perror("Failed to allocate memory for FundamentalPath");
-        exit(EXIT_FAILURE);
-    }
-    initialize_fundamental_path(path_to_current, former, 0);
-    path_to_current->end = current;
-    path_to_current->direction = determine_direction(former, current);
+    // FORMER -> CURRENT path
+    // First check if path is already initialized
 
-    // Add the path dynamically to former's path list
-    former->paths = realloc(former->paths, (former->numberOfPaths + 1) * sizeof(FundamentalPath));
-    if (!former->paths) {
-        perror("Failed to reallocate memory for former->paths");
-        exit(EXIT_FAILURE);
+    Direction fc_direction = determine_direction(former, current);
+    FundamentalPath* fc_pointer_fundamental_path = NULL;
+    for (int i = 0; i < former->numberOfPaths; ++i) {
+        FundamentalPath* path = &former->paths[i];
+        if (fc_direction == path->direction) {
+            fc_pointer_fundamental_path = path;
+        }
     }
-    former->paths[former->numberOfPaths++] = *path_to_current;
-    free(path_to_current);  // Free temporary allocation after storing
 
-    // Create and initialize path from current -> former
-    FundamentalPath* path_to_former = malloc(sizeof(FundamentalPath));
-    if (!path_to_former) {
-        perror("Failed to allocate memory for FundamentalPath");
-        exit(EXIT_FAILURE);
+    if (fc_pointer_fundamental_path) {
+        fc_pointer_fundamental_path->end = current;
     }
-    initialize_fundamental_path(path_to_former, current, 0);
-    path_to_former->end = former;
-    path_to_former->direction = determine_direction(current, former);
 
-    // Add the path dynamically to current's path list
-    current->paths = realloc(current->paths, (current->numberOfPaths + 1) * sizeof(FundamentalPath));
-    if (!current->paths) {
-        perror("Failed to reallocate memory for current->paths");
-        exit(EXIT_FAILURE);
+    // Create and initialize path from former -> current if not already initialized
+    else {
+
+        FundamentalPath* path_fc = malloc(sizeof(FundamentalPath));
+        if (!path_fc) {
+            perror("Failed to allocate memory for FundamentalPath");
+            exit(EXIT_FAILURE);
+        }
+
+        initialize_fundamental_path(path_fc, former, 0);
+        path_fc->end = current;
+        path_fc->direction = fc_direction;
+
+
+        // Add the path dynamically to former's path list
+        former->paths = realloc(former->paths, (former->numberOfPaths + 1) * sizeof(FundamentalPath));
+        if (!former->paths) {
+            perror("Failed to reallocate memory for former->paths");
+            exit(EXIT_FAILURE);
+        }
+        former->paths[former->numberOfPaths++] = *path_fc;
+
     }
-    current->paths[current->numberOfPaths++] = *path_to_former;
-    free(path_to_former);  // Free temporary allocation after storing
+
+    // CURRENT -> FORMER path
+    // First check if path is already initialized
+
+    Direction cf_direction = opposite_direction(fc_direction);
+    FundamentalPath* cf_pointer_fundamental_path = NULL;
+    for (int i = 0; i < current->numberOfPaths; ++i) {
+        FundamentalPath* path = &current->paths[i];
+        if (cf_direction == path->direction) {
+            cf_pointer_fundamental_path = path;
+        }
+    }
+
+    if (cf_pointer_fundamental_path) {
+        cf_pointer_fundamental_path->end = former;
+    }
+
+    // Create and initialize path from current -> former if not initialized
+    else{
+        FundamentalPath* path_cf = malloc(sizeof(FundamentalPath));
+        if (!path_cf) {
+            perror("Failed to allocate memory for FundamentalPath");
+            exit(EXIT_FAILURE);
+        }
+        initialize_fundamental_path(path_cf, current, 0);
+        path_cf->end = former;
+        path_cf->direction = cf_direction;
+
+        // Add the path dynamically to current's path list
+        current->paths = realloc(current->paths, (current->numberOfPaths + 1) * sizeof(FundamentalPath));
+        if (!current->paths) {
+            perror("Failed to reallocate memory for current->paths");
+            exit(EXIT_FAILURE);
+        }
+        current->paths[current->numberOfPaths++] = *path_cf;
+
+    }
 }

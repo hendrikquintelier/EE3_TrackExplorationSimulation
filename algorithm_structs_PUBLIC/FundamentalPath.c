@@ -40,12 +40,12 @@ int determine_distance_mappoints(MapPoint *start, MapPoint *end) {
 
     // Ensure the movement is in a straight line
     if ((direction == NORTH || direction == SOUTH) && delta_x != 0) {
-        fprintf(stderr, "Error: Invalid FundamentalPath, expected vertical movement but found horizontal displacement\n");
+        //fprintf(stderr, "Error: Invalid FundamentalPath, expected vertical movement but found horizontal displacement\n");
         return -1; // Error
     }
 
     if ((direction == EAST || direction == WEST) && delta_y != 0) {
-        fprintf(stderr, "Error: Invalid FundamentalPath, expected horizontal movement but found vertical displacement\n");
+        //fprintf(stderr, "Error: Invalid FundamentalPath, expected horizontal movement but found vertical displacement\n");
         return -1; // Error
     }
 

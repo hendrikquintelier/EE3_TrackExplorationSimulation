@@ -13,6 +13,8 @@
 #include "navigate.h"
 #include "algorithm_structs_PUBLIC/Path.h"
 
+#include "globals.h"
+
 
 MapPoint *former_map_point = NULL; // Keep track of the previous MapPoint
 
@@ -168,6 +170,11 @@ void start_exploration() {
         // Stop when track is fully explored
         if (num_map_points_tbd == 0 && num_all_fundamental_paths != 0 && num_map_points_all>1) {
             printf("Exploration complete!\n");
+            break;
+        }
+
+        if (current_car.current_location.x ==  start.x && current_car.current_location.y == start.y && num_map_points_all>1) {
+            printf("Track completion!\n");
             break;
         }
 

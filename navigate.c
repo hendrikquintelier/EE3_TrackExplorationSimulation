@@ -55,4 +55,18 @@ void navigate_path(const Path *p) {
 
     printf("🏁 Navigation complete! Arrived at destination (%d, %d).\n",
            p->end->location.x, p->end->location.y);
+
+    turn_to_undiscovered_fundamental_path(p->end);
+}
+
+
+
+void turn_to_undiscovered_fundamental_path(MapPoint* mp) {
+    for (int i =0; i < mp->numberOfPaths; i++) {
+        if (mp->paths[i].end==NULL) {
+            Direction dir =  mp->paths[i].direction;
+            current_car.current_orientation = dir;
+            break;
+        }
+    }
 }

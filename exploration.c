@@ -38,6 +38,8 @@ void print_all_map_points() {
 
 // Decide the next move based on ultrasonic sensors
 void decide_next_move() {
+    update_ultrasonic_sensors();
+
      if (ultrasonic_sensors[0]) {
         move_forward(&current_car);
         return;
@@ -56,6 +58,7 @@ void decide_next_move() {
         rotate_right(&current_car);
     }
 }
+
 
 // Selects a MapPoint from the list to be discovered
 MapPoint *select_next_mappoint() {
@@ -100,10 +103,13 @@ void existing_map_point_algorithm(MapPoint* existing_point) {
         printf("Unexplored paths remain at (%d, %d). Continuing exploration here.\n",
                existing_point->location.x, existing_point->location.y);
         decide_next_move();
-    } else {
+    }
+    else {
+
         Path resulting_path = find_shortest_path_to_mappoint_tbd(existing_point);
         printPathResult(&resulting_path);
         navigate_path(&resulting_path);
+
 
     }
 }

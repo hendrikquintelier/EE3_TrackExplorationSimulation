@@ -65,37 +65,4 @@ int calculate_distance(Location a, Location b) {
     return abs(a.x - b.x) + abs(a.y - b.y);
 }
 
-// Function to move towards a target location
-void navigate_to_point(Car *car, Location target_location) {
-    printf("Navigating from (%d, %d) to (%d, %d)\n",
-           car->current_location.x, car->current_location.y,
-           target_location.x, target_location.y);
 
-    // While the car has not reached the destination
-    while (car->current_location.x != target_location.x || car->current_location.y != target_location.y) {
-
-        // Update sensor readings before each move
-        update_ultrasonic_sensors();
-
-        // Determine the best move based on current position and target
-        if (car->current_location.x < target_location.x && ultrasonic_sensors[0]) {
-            move_forward();
-        } else if (car->current_location.x > target_location.x && ultrasonic_sensors[0]) {
-            move_forward();
-        } else if (car->current_location.y < target_location.y && ultrasonic_sensors[1]) {
-            rotate_left();
-            move_forward();
-        } else if (car->current_location.y > target_location.y && ultrasonic_sensors[2]) {
-            rotate_right();
-            move_forward();
-        } else {
-            // If blocked, rotate and find another way
-            rotate_right();
-        }
-
-        // Print car's current position after each move
-        printf("Current Location: (%d, %d)\n", car->current_location.x, car->current_location.y);
-    }
-
-    printf("Arrived at destination (%d, %d)!\n", target_location.x, target_location.y);
-}

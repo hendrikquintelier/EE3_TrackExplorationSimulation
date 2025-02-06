@@ -85,7 +85,9 @@ void add_map_point_tbd(MapPoint *mp) {
             exit(EXIT_FAILURE);
         }
     }
-    map_points_tbd[num_map_points_tbd++] = mp;
+    if (mp->id != 0) {
+        map_points_tbd[num_map_points_tbd++] = mp;
+    }
 }
 
 // Check if a mappoint has paths with an unknown endpoint

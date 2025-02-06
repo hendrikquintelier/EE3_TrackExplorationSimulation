@@ -22,5 +22,7 @@ add_executable(untitled main.c
         track_files_PRIVATE/track_detection.c
         direction.h
         direction.c
-        navigate.c
-        navigate.h)
+        Dijkstra.c
+        Dijkstra.h
+        navigate.h
+        navigate.c)

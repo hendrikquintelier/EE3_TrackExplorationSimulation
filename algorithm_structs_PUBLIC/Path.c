@@ -20,28 +20,21 @@ void initialize_path(Path *path, MapPoint *start, MapPoint *end) {
 }
 
 // Print a Path
-void print_path(const Path *path) {
+// Function to print a Path result
+void printPathResult(const Path *path) {
     if (!path || !path->start || !path->end) {
-        printf("Invalid Path\n");
+        printf("❌ No valid path found.\n");
         return;
     }
 
-    printf("Path from MapPoint %d to MapPoint %d\n", path->start->id, path->end->id);
+    printf("\n===== Path Information =====\n");
+    printf("Start MapPoint: ID %d, Location: (%d, %d)\n",
+           path->start->id, path->start->location.x, path->start->location.y);
 
-    if (path->route) {
-        printf("Route:\n");
-        FundamentalPath *current = path->route;
-        while (current) {
-            printf("  Path ID: %d | Start: %d | End: %d | Distance: %d\n",
-                   current->id,
-                   current->start ? current->start->id : -1,
-                   current->end ? current->end->id : -1,
-                   current->distance);
-            current = NULL; // Placeholder, assuming more logic will be implemented
-        }
-    } else {
-        printf("No route defined.\n");
-    }
+    printf("End MapPoint (Target): ID %d, Location: (%d, %d)\n",
+           path->end->id, path->end->location.x, path->end->location.y);
 
     printf("Total Distance: %d\n", path->totalDistance);
+
+    printf("================================\n");
 }

@@ -6,6 +6,7 @@
 
 struct MapPoint;  // ✅ Forward declaration of MapPoint
 
+
 typedef struct FundamentalPath {
     int id;
     struct MapPoint *start;

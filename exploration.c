@@ -173,7 +173,7 @@ void start_exploration() {
             break;
         }
 
-        if (current_car.current_location.x ==  start.x && current_car.current_location.y == start.y && num_map_points_all>1) {
+        if (current_car.current_location.x ==  start.x && current_car.current_location.y == start.y && num_map_points_all>1 && num_map_points_tbd == 0) {
             printf("Track completion!\n");
             break;
         }

@@ -3,6 +3,10 @@
 //
 #include "direction.h"
 
+#include <stddef.h>
+
+#include "algorithm_structs_PUBLIC/MapPoint.h"
+
 // Returns the opposite direction
 Direction opposite_direction(Direction dir) {
     return (dir + 2) % 4;
@@ -38,4 +42,19 @@ char direction_to_symbol(Direction dir) {
         case WEST:  return '<';
         default:    return '?';
     }
+}
+
+// Determines the direction from start to end MapPoint
+Direction determine_direction(MapPoint *start, MapPoint *end) {
+    if (!start || !end) return INVALID_DIRECTION;  // Return an invalid direction if NULL pointers
+
+    int dx = end->location.x - start->location.x;
+    int dy = end->location.y - start->location.y;
+
+    if (dx > 0 && dy == 0) return EAST;  // Moving right
+    if (dx < 0 && dy == 0) return WEST;  // Moving left
+    if (dy > 0 && dx == 0) return SOUTH; // Moving down
+    if (dy < 0 && dx == 0) return NORTH; // Moving up
+
+    return INVALID_DIRECTION;  // If not a straight move, return invalid
 }

@@ -3,7 +3,7 @@
 
 #include "../globals.h"
 
-#define GRID_SIZE 12  // 12x12 grid
+#define GRID_SIZE  13 // 13x13 grid
 
 // Symbols for navigation
 #define EMPTY '.'

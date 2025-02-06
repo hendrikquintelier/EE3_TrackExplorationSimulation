@@ -1,27 +1,28 @@
 #ifndef DIRECTION_H
 #define DIRECTION_H
 
-// Enum for cardinal directions
+
+
+// Forward declaration (this tells the compiler that MapPoint is a struct)
+struct MapPoint;
+typedef struct MapPoint MapPoint;
+
 typedef enum {
-    NORTH,
-    EAST,
-    SOUTH,
-    WEST
+    NORTH = 0,
+    EAST = 1,
+    SOUTH = 2,
+    WEST = 3,
+    INVALID_DIRECTION = -1  // Define an invalid direction
 } Direction;
 
-// Function to get the opposite direction
+#include "algorithm_structs_PUBLIC/FundamentalPath.h"  // Include this to ensure Direction is defined
+
+// Function prototypes
+Direction determine_direction(MapPoint *start, MapPoint *end);
 Direction opposite_direction(Direction dir);
-
-// Function to turn left from the current direction
 Direction turn_left(Direction dir);
-
-// Function to turn right from the current direction
 Direction turn_right(Direction dir);
-
-// Function to convert direction to its string representation
 const char* direction_to_string(Direction dir);
-
-// Function to convert direction to its corresponding symbol
 char direction_to_symbol(Direction dir);
 
 #endif // DIRECTION_H

@@ -13,7 +13,7 @@ Location start = {0,0};
 
 
 // Define global car
-Car current_car = {{4, 1}, SOUTH};  // Start at (4,1), facing down
+Car current_car = {{2, 1}, EAST};  // Start at (4,1), facing down
 
 // Define global ultrasonic sensors
 bool ultrasonic_sensors[3] = {true, true, true};  // {forward, left, right}

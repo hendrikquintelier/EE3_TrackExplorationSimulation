@@ -8,19 +8,6 @@
 // Static counter for unique FundamentalPath IDs
 static int fundamental_path_counter = 0;
 
-// Function to determine the direction from `start` to `end`
-Direction determine_direction(MapPoint *start, MapPoint *end) {
-    if (!start || !end) return NORTH;  // Default safety value
-
-    if (end->location.x > start->location.x) return EAST;
-    if (end->location.x < start->location.x) return WEST;
-    if (end->location.y > start->location.y) return SOUTH;
-    if (end->location.y < start->location.y) return NORTH;
-
-    return NORTH;  // Should never happen (same location)
-}
-
-
 
 
 

@@ -4,6 +4,7 @@
 #include "../globals.h"
 #include "MapPoint.h"
 #include "FundamentalPath.h"
+#include "../direction.h"
 
 // Static counter for unique MapPoint IDs
 static int map_point_counter = 0;
@@ -141,6 +142,10 @@ MapPoint *check_map_point_already_exists() {
 }
 
 
+int calculate_distance(Location a, Location b) {
+    return abs(a.x - b.x) + abs(a.y - b.y);
+}
+
 // Function to update an existing MapPoint and link it with the most recently added MapPoint
 void update_existing_mappoint(MapPoint *existing_point) {
     if (num_map_points_all < 2) {
@@ -155,36 +160,58 @@ void update_existing_mappoint(MapPoint *existing_point) {
            existing_point->location.x, existing_point->location.y,
            latest_point->location.x, latest_point->location.y);
 
-    // Determine the direction of movement from the existing point to the latest point
-    int dx = latest_point->location.x - existing_point->location.x;
-    int dy = latest_point->location.y - existing_point->location.y;
+    // Determine the direction and distance
+    Direction existing_to_latest = determine_direction(existing_point, latest_point);
+    Direction latest_to_existing = opposite_direction(existing_to_latest);
+    int distance = calculate_distance(existing_point->location, latest_point->location);
 
-    int direction_existing = -1;
-    int direction_latest = -1;
 
-    if (dx == 1 && dy == 0) {
-        direction_existing = 0;  // Forward
-        direction_latest = 1;    // Backward (relative)
-    } else if (dx == -1 && dy == 0) {
-        direction_existing = 1;  // Backward
-        direction_latest = 0;    // Forward (relative)
-    } else if (dx == 0 && dy == 1) {
-        direction_existing = 2;  // Right
-        direction_latest = 3;    // Left (relative)
-    } else if (dx == 0 && dy == -1) {
-        direction_existing = 3;  // Left
-        direction_latest = 2;    // Right (relative)
+
+    // Search for existing paths and update if necessary
+    int updated = 0;
+    for (int i = 0; i < existing_point->numberOfPaths; i++) {
+        if (existing_point->paths[i].direction == existing_to_latest) {
+            existing_point->paths[i].end = latest_point;
+            existing_point->paths[i].distance = distance;
+            updated = 1;
+            break;
+        }
     }
 
-    // Ensure a valid connection
-    if (direction_existing != -1 && direction_latest != -1) {
-        existing_point->paths[direction_existing].end = latest_point;
-        latest_point->paths[direction_latest].end = existing_point;
+    for (int i = 0; i < latest_point->numberOfPaths; i++) {
+        if (latest_point->paths[i].direction == latest_to_existing) {
+            latest_point->paths[i].end = existing_point;
+            latest_point->paths[i].distance = distance;
+            updated = 1;
+            break;
+        }
+    }
 
-        printf("Path established between (%d, %d) and (%d, %d)\n",
+    // If no existing path was updated, create new FundamentalPaths
+    if (!updated) {
+        // Allocate new paths dynamically
+        existing_point->paths = realloc(existing_point->paths, (existing_point->numberOfPaths + 1) * sizeof(FundamentalPath));
+        latest_point->paths = realloc(latest_point->paths, (latest_point->numberOfPaths + 1) * sizeof(FundamentalPath));
+
+        if (!existing_point->paths || !latest_point->paths) {
+            perror("❌ Error: Failed to allocate memory for FundamentalPaths");
+            exit(EXIT_FAILURE);
+        }
+
+        // Initialize new paths
+        initialize_fundamental_path(&existing_point->paths[existing_point->numberOfPaths], existing_point, distance);
+        existing_point->paths[existing_point->numberOfPaths].end = latest_point;
+        existing_point->paths[existing_point->numberOfPaths].direction = existing_to_latest;
+        existing_point->numberOfPaths++;
+
+        initialize_fundamental_path(&latest_point->paths[latest_point->numberOfPaths], latest_point, distance);
+        latest_point->paths[latest_point->numberOfPaths].end = existing_point;
+        latest_point->paths[latest_point->numberOfPaths].direction = latest_to_existing;
+        latest_point->numberOfPaths++;
+
+        printf("✅ Path established between (%d, %d) and (%d, %d) with distance %d\n",
                existing_point->location.x, existing_point->location.y,
-               latest_point->location.x, latest_point->location.y);
-    } else {
-        printf("Error: Unable to determine path direction!\n");
+               latest_point->location.x, latest_point->location.y,
+               distance);
     }
 }

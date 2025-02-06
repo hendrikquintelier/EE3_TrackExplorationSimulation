@@ -60,9 +60,6 @@ void move_forward() {
     }
 }
 
-// Helper function to calculate Manhattan Distance
-int calculate_distance(Location a, Location b) {
-    return abs(a.x - b.x) + abs(a.y - b.y);
-}
+
 
 

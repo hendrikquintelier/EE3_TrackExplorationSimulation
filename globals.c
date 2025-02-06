@@ -9,6 +9,9 @@ MapPoint **map_points_tbd = NULL;
 MapPoint **map_points_all = NULL;
 FundamentalPath **all_fundamental_paths = NULL;
 
+Location start = {0,0};
+
+
 // Define global car
 Car current_car = {{4, 1}, SOUTH};  // Start at (4,1), facing down
 

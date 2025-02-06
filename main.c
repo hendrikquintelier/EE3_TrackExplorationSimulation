@@ -9,6 +9,7 @@ int main() {
     create_loop_track();  // Create the track layout
 
     printf("Starting Automatic Exploration...\n");
+    start = current_car.current_location;
     start_exploration();
 
     return 0;

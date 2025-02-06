@@ -12,6 +12,8 @@ extern int num_map_points_tbd, capacity_map_points_tbd;
 extern int num_map_points_all, capacity_map_points_all;
 extern int num_all_fundamental_paths, capacity_all_fundamental_paths;
 
+extern Location start;
+
 // Define the Car struct
 typedef struct {
     Location current_location;

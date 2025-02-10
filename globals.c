@@ -9,11 +9,15 @@ MapPoint **map_points_tbd = NULL;
 MapPoint **map_points_all = NULL;
 FundamentalPath **all_fundamental_paths = NULL;
 
+
 Location start = {0,0};
+Direction start_orientation = SOUTH;
+
+
 
 
 // Define global car
-Car current_car = {{4, 1}, SOUTH};  // Start at (4,1), facing down
+Car current_car = {{2, 1}, EAST};
 
 // Define global ultrasonic sensors
 bool ultrasonic_sensors[3] = {true, true, true};  // {forward, left, right}

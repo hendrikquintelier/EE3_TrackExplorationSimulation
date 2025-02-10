@@ -11,4 +11,5 @@ void rotate_right();
 void move_forward();
 void navigate_to_point(Car *car, Location target_location);
 
+
 #endif // TRACK_NAVIGATION_H

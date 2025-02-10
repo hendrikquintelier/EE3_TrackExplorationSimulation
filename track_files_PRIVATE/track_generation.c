@@ -1,10 +1,21 @@
 #include "track_generation.h"
 
-
-// Define the global grid (now stored in track_generation.c)
+/**
+ * @brief Global 2D grid representing the track layout.
+ *
+ * Each cell stores a character representing track elements:
+ * - '#' = Track
+ * - 'S' = Start/Finish line
+ * - '.' = Empty space
+ */
 char grid[GRID_SIZE][GRID_SIZE];
 
-// Function to initialize the grid
+/**
+ * @brief Initializes the grid by setting all cells to EMPTY.
+ *
+ * This function is typically called before generating a track
+ * to ensure a clean starting state.
+ */
 void initialize_grid() {
     for (int i = 0; i < GRID_SIZE; i++) {
         for (int j = 0; j < GRID_SIZE; j++) {
@@ -13,44 +24,38 @@ void initialize_grid() {
     }
 }
 
-// Function to create a **proper closed-loop track** (1-block width)
+/**
+ * @brief Generates a predefined closed-loop track.
+ *
+ * This function creates a **one-block-wide** closed-loop track
+ * by copying a predefined layout into the global grid.
+ *
+ * - 'S' marks the **start/finish** line.
+ * - '#' represents **track paths**.
+ * - '.' represents **empty space**.
+ */
 void create_loop_track() {
-    // Start/Finish Line
-    grid[1][4] = START_FINISH;
+    // Predefined track layout (loop track)
+    char complex_grid[GRID_SIZE][GRID_SIZE] = {
+        {'.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
+        {'.', '.', 'S', '#', '#', '#', '#', '#', '#', '.', '.', '.', '.'},
+        {'.', '.', '#', '.', '.', '#', '.', '.', '#', '.', '.', '.', '.'},
+        {'.', '.', '#', '.', '.', '#', '#', '#', '#', '.', '.', '.', '.'},
+        {'.', '.', '#', '.', '.', '.', '.', '.', '#', '.', '.', '.', '.'},
+        {'.', '.', '#', '#', '#', '#', '.', '.', '#', '#', '#', '#', '.'},
+        {'.', '.', '#', '.', '.', '#', '.', '.', '.', '#', '.', '#', '.'},
+        {'.', '.', '#', '#', '#', '#', '#', '#', '#', '#', '.', '#', '.'},
+        {'.', '.', '.', '.', '.', '#', '.', '.', '.', '#', '.', '#', '.'},
+        {'.', '.', '.', '.', '#', '#', '#', '#', '#', '#', '#', '#', '.'},
+        {'.', '.', '.', '.', '#', '.', '.', '.', '.', '.', '#', '.', '.'},
+        {'.', '.', '.', '.', '#', '#', '#', '#', '#', '#', '#', '.', '.'},
+        {'.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
+    };
 
-    // Top Section (Track Moves Down)
-    grid[2][4] = TRACK;
-    grid[3][4] = TRACK;
-    grid[4][4] = TRACK;
-
-    // Right Path
-    grid[5][3] = TRACK;
-    grid[6][3] = TRACK;
-    grid[7][3] = TRACK;
-
-    // Split points
-    grid[5][4] = TRACK;
-    grid[7][4] = TRACK;
-
-    // Left Path
-    grid[5][5] = TRACK;
-    grid[6][5] = TRACK;
-    grid[7][5] = TRACK;
-
-    // Completing the Loop (Back to Start)
-    grid[8][4] = TRACK;
-    grid[9][4] = TRACK;
-    grid[9][5] = TRACK;
-    grid[9][6] = TRACK;
-    grid[9][7] = TRACK;
-    grid[8][7] = TRACK;
-    grid[7][7] = TRACK;
-    grid[6][7] = TRACK;
-    grid[5][7] = TRACK;
-    grid[4][7] = TRACK;
-    grid[3][7] = TRACK;
-    grid[2][7] = TRACK;
-    grid[1][7] = TRACK;
-    grid[1][6] = TRACK;
-    grid[1][5] = TRACK;
+    // Copy predefined track layout into the global grid
+    for (int i = 0; i < GRID_SIZE; i++) {
+        for (int j = 0; j < GRID_SIZE; j++) {
+            grid[i][j] = complex_grid[i][j];
+        }
+    }
 }

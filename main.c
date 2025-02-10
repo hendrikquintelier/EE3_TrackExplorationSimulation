@@ -10,6 +10,7 @@ int main() {
 
     printf("Starting Automatic Exploration...\n");
     start = current_car.current_location;
+    start_orientation = current_car.current_orientation;
     start_exploration();
 
     return 0;

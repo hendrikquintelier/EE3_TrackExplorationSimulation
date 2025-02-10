@@ -3,14 +3,11 @@
 #include "globals.h"
 #include "algorithm_structs_PUBLIC/Path.h"
 #include "track_files_PRIVATE/track_navigation.h"
+#include "algorithm_structs_PUBLIC/MapPoint.h"
 
 // Function to rotate the car to a given direction
 void rotate_to(Direction target_direction) {
-
         current_car.current_orientation = target_direction;
-
-
-
 }
 
 
@@ -27,7 +24,7 @@ void navigate_path(const Path *p) {
     for (int i = 0; i<p->totalDistance; i++) {
         FundamentalPath *step = p->route[i];
 
-        if (current_car.current_location.x == p->end->location.x && current_car.current_location.x == p->end->location.x) {
+        if (current_car.current_location.x == p->end->location.x && current_car.current_location.y == p->end->location.y) {
             break;
         }
         if (!step || !step->end) {
@@ -62,6 +59,7 @@ void navigate_path(const Path *p) {
 
 
 void turn_to_undiscovered_fundamental_path(MapPoint* mp) {
+
     for (int i =0; i < mp->numberOfPaths; i++) {
         if (mp->paths[i].end==NULL) {
             Direction dir =  mp->paths[i].direction;

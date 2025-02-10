@@ -1,12 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <conio.h>  // For Windows key input
 #include <unistd.h> // For usleep (smooth screen updates)
 #include "track_navigation.h"
 #include "../direction.h"
 
-
-// Function to print the grid with the car's position
+/**
+ * @brief Prints the grid with the car's current position and orientation.
+ *
+ * This function clears the screen and redraws the grid with the car's location,
+ * showing its current direction.
+ */
 void print_grid() {
     // Clear screen properly
 #ifdef _WIN32
@@ -30,27 +33,47 @@ void print_grid() {
     usleep(50000);   // Add small delay to prevent glitches
 }
 
-// Function to rotate the car left
+/**
+ * @brief Rotates the car 90 degrees counterclockwise.
+ */
 void rotate_left() {
     current_car.current_orientation = turn_left(current_car.current_orientation);
 }
 
-// Function to rotate the car right
+/**
+ * @brief Rotates the car 90 degrees clockwise.
+ */
 void rotate_right() {
     current_car.current_orientation = turn_right(current_car.current_orientation);
 }
 
-// Function to move the car forward if possible
+/**
+ * @brief Moves the car forward if the next position is part of the track.
+ *
+ * The function calculates the new position based on the car's current orientation
+ * and moves it only if the next position is a valid track or the start/finish line.
+ */
 void move_forward() {
     int new_x = current_car.current_location.x;
     int new_y = current_car.current_location.y;
 
     // Determine next position based on direction
     switch (current_car.current_orientation) {
-        case NORTH: new_y -= 1; break;
-        case SOUTH: new_y += 1; break;
-        case WEST:  new_x -= 1; break;
-        case EAST:  new_x += 1; break;
+        case NORTH:
+            if (new_y > 0) new_y -= 1;
+            break;
+        case SOUTH:
+            if (new_y < GRID_SIZE - 1) new_y += 1;
+            break;
+        case WEST:
+            if (new_x > 0) new_x -= 1;
+            break;
+        case EAST:
+            if (new_x < GRID_SIZE - 1) new_x += 1;
+            break;
+        default:
+            fprintf(stderr, "Warning: Invalid car orientation detected. Unable to move forward.\n");
+            return;
     }
 
     // Only move if the next position is part of the track
@@ -59,7 +82,3 @@ void move_forward() {
         current_car.current_location.y = new_y;
     }
 }
-
-
-
-

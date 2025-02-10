@@ -66,3 +66,10 @@
 268	434	7609174597880400	untitled.exe	3e1d10aa0035ed0b
 5	113	7609175919468426	CMakeFiles/untitled.dir/algorithm_structs_PUBLIC/FundamentalPath.c.obj	7dbf6fcfa5fcec61
 114	281	7609175920547069	untitled.exe	3e1d10aa0035ed0b
+21	110	7609181209816710	CMakeFiles/untitled.dir/track_files_PRIVATE/track_generation.c.obj	f85ec2c275cb41d9
+13	114	7609181209736016	CMakeFiles/untitled.dir/algorithm_structs_PUBLIC/Path.c.obj	f3c9d06663df77ca
+5	123	7609181209650058	CMakeFiles/untitled.dir/algorithm_structs_PUBLIC/FundamentalPath.c.obj	7dbf6fcfa5fcec61
+29	134	7609181209886610	CMakeFiles/untitled.dir/track_files_PRIVATE/track_detection.c.obj	c3f4114ed8924b82
+134	300	7609181210942571	untitled.exe	3e1d10aa0035ed0b
+6	121	7609182316904709	CMakeFiles/untitled.dir/track_files_PRIVATE/track_navigation.c.obj	13b6c7e8c75b9ce9
+121	289	7609182318052772	untitled.exe	3e1d10aa0035ed0b

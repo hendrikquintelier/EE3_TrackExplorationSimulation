@@ -1,3 +1,7 @@
+//
+// Created by Hendrik Quintelier on 05/02/2025.
+//
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "FundamentalPath.h"
@@ -5,50 +9,62 @@
 #include "../direction.h"
 #include "../globals.h"
 
-// Static counter for unique FundamentalPath IDs
+// ======================= GLOBAL VARIABLES ======================= //
+
+/**
+ * @brief Static counter for generating unique FundamentalPath IDs.
+ */
 static int fundamental_path_counter = 0;
 
+// ======================= FUNCTION IMPLEMENTATIONS ======================= //
 
-
-
-// Function to determine the straight-line distance of a FundamentalPath
+/**
+ * @brief Determines the Manhattan distance between two MapPoints.
+ *
+ * @param start Pointer to the starting MapPoint.
+ * @param end Pointer to the ending MapPoint.
+ * @return int The Manhattan distance, or -1 if an invalid path.
+ */
 int determine_distance_mappoints(MapPoint *start, MapPoint *end) {
     if (!start || !end) {
-        fprintf(stderr, "Error: Null MapPoint passed to determine_distance_fundamentalpath\n");
-        return -1;  // Return -1 to indicate an error
+        fprintf(stderr, "Error: Null MapPoint passed to determine_distance_mappoints\n");
+        return -1;
     }
 
-    // Calculate the difference in x and y coordinates
+    // Calculate the absolute difference in x and y coordinates
     int delta_x = abs(end->location.x - start->location.x);
     int delta_y = abs(end->location.y - start->location.y);
 
     // Determine direction from start to end
     Direction direction = determine_direction(start, end);
 
-    // Ensure the movement is in a straight line
-    if ((direction == NORTH || direction == SOUTH) && delta_x != 0) {
-        //fprintf(stderr, "Error: Invalid FundamentalPath, expected vertical movement but found horizontal displacement\n");
-        return -1; // Error
-    }
+    // Ensure movement is strictly horizontal or vertical
+    if ((direction == NORTH || direction == SOUTH) && delta_x != 0) return -1;
+    if ((direction == EAST || direction == WEST) && delta_y != 0) return -1;
 
-    if ((direction == EAST || direction == WEST) && delta_y != 0) {
-        //fprintf(stderr, "Error: Invalid FundamentalPath, expected horizontal movement but found vertical displacement\n");
-        return -1; // Error
-    }
-
-    // Return the Manhattan distance (since we assume straight lines)
     return delta_x + delta_y;
 }
 
+/**
+ * @brief Determines the distance of a FundamentalPath using its endpoints.
+ *
+ * @param path Pointer to the FundamentalPath.
+ * @return int The calculated distance.
+ */
 int determine_distance_fundamentalpath(FundamentalPath *path) {
-    return determine_distance_mappoints(path->start,path->end);
+    return determine_distance_mappoints(path->start, path->end);
 }
 
-
-// Initialize a FundamentalPath
+/**
+ * @brief Initializes a new FundamentalPath.
+ *
+ * @param fp Pointer to the FundamentalPath structure to initialize.
+ * @param start Pointer to the starting MapPoint.
+ * @param distance Distance value for the path.
+ */
 void initialize_fundamental_path(FundamentalPath *fp, MapPoint *start, int distance) {
     if (!fp) {
-        perror("Null pointer passed to initialize_fundamental_path");
+        perror("Error: Null pointer passed to initialize_fundamental_path");
         return;
     }
 
@@ -56,23 +72,29 @@ void initialize_fundamental_path(FundamentalPath *fp, MapPoint *start, int dista
     fp->start = start;
     fp->end = NULL;
     fp->distance = distance;
-    fp->direction = NORTH;  // Default direction, updated later
+    fp->direction = NORTH;  // Default direction (updated later)
 
     add_fundamental_path(fp);
-
-    printf("Initialized FundamentalPath ID: %d\n", fp->id);
 }
 
-// Initialize multiple FundamentalPaths based on UltraSonicDetection
+/**
+ * @brief Initializes multiple FundamentalPaths based on UltraSonicDetection.
+ *
+ * @param UltraSonicDetection Boolean array representing detected paths.
+ * @return FundamentalPath* Pointer to dynamically allocated paths array.
+ */
 FundamentalPath* initialize_fundamental_paths(bool UltraSonicDetection[3]) {
     int pathCount = 0;
+
+    // Count the number of detected paths
     for (int i = 0; i < 3; ++i) {
         if (UltraSonicDetection[i]) pathCount++;
     }
 
+    // Allocate memory for the paths
     FundamentalPath* paths = malloc(pathCount * sizeof(FundamentalPath));
     if (!paths) {
-        perror("Failed to allocate memory for FundamentalPaths");
+        perror("Error: Failed to allocate memory for FundamentalPaths");
         exit(EXIT_FAILURE);
     }
 
@@ -86,21 +108,26 @@ FundamentalPath* initialize_fundamental_paths(bool UltraSonicDetection[3]) {
     return paths;
 }
 
-// Update fundamental paths when discovering a new MapPoint
+/**
+ * @brief Updates or adds a FundamentalPath between two MapPoints.
+ *
+ * @param current Pointer to the current MapPoint.
+ * @param former Pointer to the previous MapPoint.
+ */
 void update_latest_fundamental_path(MapPoint* current, MapPoint* former) {
     if (!current || !former) {
-        fprintf(stderr, "Null pointer passed to update_latest_fundamental_path\n");
+        fprintf(stderr, "Error: Null pointer passed to update_latest_fundamental_path\n");
         return;
     }
 
-    // Determine the direction from former to current
+    // Determine directions between the two MapPoints
     Direction fc_direction = determine_direction(former, current);
     Direction cf_direction = opposite_direction(fc_direction);
 
     FundamentalPath* fc_pointer_fundamental_path = NULL;
     FundamentalPath* cf_pointer_fundamental_path = NULL;
 
-    // Check if the path from former -> current already exists
+    // === Check if a path already exists from 'former' to 'current' === //
     for (int i = 0; i < former->numberOfPaths; ++i) {
         if (former->paths[i].direction == fc_direction) {
             fc_pointer_fundamental_path = &former->paths[i];
@@ -112,11 +139,11 @@ void update_latest_fundamental_path(MapPoint* current, MapPoint* former) {
     if (fc_pointer_fundamental_path) {
         fc_pointer_fundamental_path->end = current;
         fc_pointer_fundamental_path->distance = determine_distance_fundamentalpath(fc_pointer_fundamental_path);
-    }
-    else { // Otherwise, create and add a new path
+    } else {
+        // Otherwise, create a new path
         fc_pointer_fundamental_path = malloc(sizeof(FundamentalPath));
         if (!fc_pointer_fundamental_path) {
-            perror("Failed to allocate memory for FundamentalPath");
+            perror("Error: Failed to allocate memory for FundamentalPath");
             exit(EXIT_FAILURE);
         }
 
@@ -125,19 +152,16 @@ void update_latest_fundamental_path(MapPoint* current, MapPoint* former) {
         fc_pointer_fundamental_path->direction = fc_direction;
         fc_pointer_fundamental_path->distance = determine_distance_fundamentalpath(fc_pointer_fundamental_path);
 
-        // Attempt to resize memory safely
+        // Safely expand the former->paths array
         FundamentalPath *newPaths = realloc(former->paths, (former->numberOfPaths + 1) * sizeof(FundamentalPath));
-        if (!newPaths) {  // Check if realloc failed
+        if (!newPaths) {
             perror("Error: Failed to allocate memory for FundamentalPaths");
-            exit(EXIT_FAILURE);  // Handle error safely
+            exit(EXIT_FAILURE);
         }
-
-        // Only update former->paths if realloc succeeded
         former->paths = newPaths;
-
     }
 
-    // Check if the path from current -> former already exists
+    // === Check if a path already exists from 'current' to 'former' === //
     for (int i = 0; i < current->numberOfPaths; ++i) {
         if (current->paths[i].direction == cf_direction) {
             cf_pointer_fundamental_path = &current->paths[i];
@@ -148,30 +172,26 @@ void update_latest_fundamental_path(MapPoint* current, MapPoint* former) {
     // If path exists, update its endpoint and distance
     if (cf_pointer_fundamental_path) {
         cf_pointer_fundamental_path->end = former;
-        cf_pointer_fundamental_path->distance = fc_pointer_fundamental_path->distance; // Copy distance
-    }
-    else { // Otherwise, create and add a new path
+        cf_pointer_fundamental_path->distance = fc_pointer_fundamental_path->distance;
+    } else {
+        // Otherwise, create a new path
         cf_pointer_fundamental_path = malloc(sizeof(FundamentalPath));
         if (!cf_pointer_fundamental_path) {
-            perror("Failed to allocate memory for FundamentalPath");
+            perror("Error: Failed to allocate memory for FundamentalPath");
             exit(EXIT_FAILURE);
         }
 
         initialize_fundamental_path(cf_pointer_fundamental_path, current, 0);
         cf_pointer_fundamental_path->end = former;
         cf_pointer_fundamental_path->direction = cf_direction;
-        cf_pointer_fundamental_path->distance = fc_pointer_fundamental_path->distance; // Copy distance
+        cf_pointer_fundamental_path->distance = fc_pointer_fundamental_path->distance;
 
-        // Attempt to resize memory safely
+        // Safely expand the current->paths array
         FundamentalPath *newPaths = realloc(current->paths, (current->numberOfPaths + 1) * sizeof(FundamentalPath));
-        if (!newPaths) {  // Check if realloc failed
+        if (!newPaths) {
             perror("Error: Failed to allocate memory for FundamentalPaths");
-            exit(EXIT_FAILURE);  // Handle error safely
+            exit(EXIT_FAILURE);
         }
-
-        // Only update current->paths if realloc succeeded
         current->paths = newPaths;
-
     }
 }
-

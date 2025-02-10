@@ -1,10 +1,21 @@
 #include "track_generation.h"
 
-
-// Define the global grid (now stored in track_generation.c)
+/**
+ * @brief Global 2D grid representing the track layout.
+ *
+ * Each cell stores a character representing track elements:
+ * - '#' = Track
+ * - 'S' = Start/Finish line
+ * - '.' = Empty space
+ */
 char grid[GRID_SIZE][GRID_SIZE];
 
-// Function to initialize the grid
+/**
+ * @brief Initializes the grid by setting all cells to EMPTY.
+ *
+ * This function is typically called before generating a track
+ * to ensure a clean starting state.
+ */
 void initialize_grid() {
     for (int i = 0; i < GRID_SIZE; i++) {
         for (int j = 0; j < GRID_SIZE; j++) {
@@ -13,8 +24,18 @@ void initialize_grid() {
     }
 }
 
-// Function to create a **proper closed-loop track** (1-block width)
+/**
+ * @brief Generates a predefined closed-loop track.
+ *
+ * This function creates a **one-block-wide** closed-loop track
+ * by copying a predefined layout into the global grid.
+ *
+ * - 'S' marks the **start/finish** line.
+ * - '#' represents **track paths**.
+ * - '.' represents **empty space**.
+ */
 void create_loop_track() {
+    // Predefined track layout (loop track)
     char complex_grid[GRID_SIZE][GRID_SIZE] = {
         {'.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
         {'.', '.', 'S', '#', '#', '#', '#', '#', '#', '.', '.', '.', '.'},
@@ -31,9 +52,10 @@ void create_loop_track() {
         {'.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
     };
 
+    // Copy predefined track layout into the global grid
     for (int i = 0; i < GRID_SIZE; i++) {
         for (int j = 0; j < GRID_SIZE; j++) {
-            grid[i][j] = complex_grid[i][j];  // Copy the layout into the main grid
+            grid[i][j] = complex_grid[i][j];
         }
     }
 }

@@ -1,26 +1,37 @@
+//
+// Created by Hendrik Quintelier on 05/02/2025.
+//
+
 #include <stdio.h>
-#include <stdlib.h>
 #include "Path.h"
 
-// Initialize a Path
+/**
+ * @brief Initializes a Path structure between two MapPoints.
+ *
+ * @param path Pointer to the Path structure to be initialized.
+ * @param start Pointer to the starting MapPoint.
+ * @param end Pointer to the ending MapPoint.
+ */
 void initialize_path(Path *path, MapPoint *start, MapPoint *end) {
     if (!path || !start || !end) {
-        perror("Null pointer passed to initialize_path");
+        perror("Error: Null pointer passed to initialize_path");
         return;
     }
 
+    // Assign the start and end MapPoints
     path->start = start;
     path->end = end;
     path->totalDistance = 0;  // Default total distance
 
-    // Find a route between start and end (not implemented yet)
-    path->route = NULL;  // Placeholder for actual path-finding algorithm
-
-    printf("Initialized Path from MapPoint %d to MapPoint %d\n", start->id, end->id);
+    // Placeholder for actual path-finding algorithm
+    path->route = NULL;
 }
 
-// Print a Path
-// Function to print a Path result
+/**
+ * @brief Prints the details of a given Path.
+ *
+ * @param path Pointer to the Path structure to print.
+ */
 void printPathResult(const Path *path) {
     if (!path || !path->start || !path->end) {
         printf("❌ No valid path found.\n");
@@ -35,6 +46,5 @@ void printPathResult(const Path *path) {
            path->end->id, path->end->location.x, path->end->location.y);
 
     printf("Total Distance: %d\n", path->totalDistance);
-
     printf("================================\n");
 }

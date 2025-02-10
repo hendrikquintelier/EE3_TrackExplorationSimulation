@@ -17,38 +17,34 @@
 
 int checkValidTrackCompletion();
 
-MapPoint *former_map_point = NULL; // Keep track of the previous MapPoint
+MapPoint *former_map_point = NULL; // Keeps track of the previous MapPoint
 
-// Check if the car is at a MapPoint
+/**
+ * @brief Checks if the car is currently at a MapPoint.
+ *
+ * @return int 1 if at a MapPoint, 0 otherwise.
+ */
 int is_map_point() {
     int options = 0;
 
     if (ultrasonic_sensors[1]) options++; // Can move left
     if (ultrasonic_sensors[2]) options++; // Can move right
 
-    return (options > 0);  // More than one option = MapPoint
+    return (options > 0);  // More than one option indicates a MapPoint
 }
 
-// Print all MapPoint information for debugging
-void print_all_map_points() {
-    printf("\n===== MapPoint Debug Info =====\n");
-    for (int i = 0; i < num_map_points_all; i++) {
-        print_map_point(map_points_all[i]);
-
-        printf("----------------------------------\n");
-    }
-}
-
-// Decide the next move based on ultrasonic sensors
+/**
+ * @brief Decides the next move based on ultrasonic sensor readings.
+ */
 void decide_next_move() {
     update_ultrasonic_sensors();
 
-     if (ultrasonic_sensors[0]) {
+    if (ultrasonic_sensors[0]) {
         move_forward(&current_car);
         return;
     }
 
-    // If forward is blocked, turn left or right
+    // If forward is blocked, try turning
     if (ultrasonic_sensors[1]) {
         rotate_left(&current_car);
         move_forward(&current_car);
@@ -56,38 +52,37 @@ void decide_next_move() {
         rotate_right(&current_car);
         move_forward(&current_car);
     } else {
-        // No way forward, turn around
+        // No valid moves, perform a U-turn
         rotate_right(&current_car);
         rotate_right(&current_car);
     }
 }
 
-
-// Selects a MapPoint from the list to be discovered
+/**
+ * @brief Selects the next unexplored MapPoint.
+ *
+ * @return MapPoint* Pointer to the next MapPoint to explore, or NULL if none remain.
+ */
 MapPoint *select_next_mappoint() {
     if (num_map_points_tbd == 0) return NULL;
 
-    // Choose the first available MapPoint that still needs discovery
     for (int i = 0; i < num_map_points_tbd; i++) {
-        if (map_points_tbd[i] != NULL) {  // Check if the address is valid
-            return map_points_tbd[i];    // Return a pointer to the struct
+        if (map_points_tbd[i] != NULL) {
+            return map_points_tbd[i];
         }
     }
     return NULL;
 }
 
-
-
-
-
+/**
+ * @brief Handles navigation when revisiting an already discovered MapPoint.
+ *
+ * @param existing_point Pointer to the existing MapPoint.
+ */
 void existing_map_point_algorithm(MapPoint* existing_point) {
-    // If MapPoint exists, ensure paths remain connected
-    printf("Revisiting existing MapPoint at (%d, %d)\n",
-           existing_point->location.x, existing_point->location.y);
-
     update_existing_mappoint(existing_point);
 
-    // Update the FundamentalPath between former and current (if not the first step)
+    // Ensure a FundamentalPath exists between the former and current MapPoint
     if (former_map_point) {
         update_latest_fundamental_path(existing_point, former_map_point);
     }
@@ -103,24 +98,25 @@ void existing_map_point_algorithm(MapPoint* existing_point) {
     check_mappoints_tbd();
 
     if (unexplored_paths > 0) {
-        printf("Unexplored paths remain at (%d, %d). Continuing exploration here.\n",
-               existing_point->location.x, existing_point->location.y);
         decide_next_move();
-    }
-    else {
+    } else {
+        // Find shortest path to the next unexplored MapPoint
+        Path *resulting_path = find_shortest_path_to_mappoint_tbd(existing_point);
 
-        Path resulting_path = find_shortest_path_to_mappoint_tbd(existing_point);
-        printPathResult(&resulting_path);
-        navigate_path(&resulting_path);
+        if (resulting_path) {
+            navigate_path(resulting_path);
 
-
+            // Free allocated memory
+            free(resulting_path->route);
+            free(resulting_path);
+        }
     }
 }
 
-// Main function to start automatic exploration
+/**
+ * @brief Starts the autonomous exploration of the track.
+ */
 void start_exploration() {
-
-
     while (1) {
         print_grid(current_car);
 
@@ -133,63 +129,55 @@ void start_exploration() {
             MapPoint *existing_point = check_map_point_already_exists();
 
             if (existing_point) {
-
                 existing_map_point_algorithm(existing_point);
-
             } else {
                 // Allocate memory for a new MapPoint
                 MapPoint *new_map_point = malloc(sizeof(MapPoint));
                 if (!new_map_point) {
-                    perror("Failed to allocate memory for MapPoint");
+                    perror("Memory allocation failed for MapPoint");
                     exit(EXIT_FAILURE);
                 }
 
                 // Set location based on the car's current position
                 Location location = {current_car.current_location.x, current_car.current_location.y};
 
-                // Pass the ultrasonic detection array to determine paths
+                // Initialize new MapPoint with sensor data
                 initialize_map_point(new_map_point, location, ultrasonic_sensors);
 
-                printf("New MapPoint created at (%d, %d)\n", location.x, location.y);
-
-                // If this isn't the start position, create a FundamentalPath BACK to former MapPoint
+                // Link with the previous MapPoint if it exists
                 if (former_map_point) {
                     update_latest_fundamental_path(new_map_point, former_map_point);
                 }
 
-                // Set this as the latest known MapPoint
+                // Update the former MapPoint tracker
                 former_map_point = new_map_point;
             }
         }
 
-        // Move or turn if necessary
+        // Decide the next movement
         decide_next_move();
 
-        // Print MapPoint information for debugging
-        //print_all_map_points();
-
-        // Stop when track is fully explored
-        if (num_map_points_tbd == 0 && num_all_fundamental_paths != 0 && num_map_points_all>1) {
-            printf("Exploration complete!\n");
+        // Stop when exploration is complete
+        if (num_map_points_tbd == 0 && num_all_fundamental_paths != 0 && num_map_points_all > 1) {
             break;
         }
 
-        if ( checkValidTrackCompletion()){
-                printf("Track completion!\n");
-                break;
-            }
+        if (checkValidTrackCompletion()) {
+            break;
+        }
 
-
-        usleep(500000);  // Slow down movement for realism
+        usleep(500000);  // Delay for realistic movement speed
     }
 }
 
+/**
+ * @brief Checks if the track exploration has been successfully completed.
+ *
+ * @return int 1 if exploration is complete, 0 otherwise.
+ */
 int checkValidTrackCompletion() {
-    if (current_car.current_location.x ==  start.x && current_car.current_location.y == start.y && num_map_points_all>1 &&
-        (current_car.current_orientation != opposite_direction(start_orientation) )) {
-
-            return 1;
-        }
-    return 0;
-
+    return (current_car.current_location.x == start.x &&
+            current_car.current_location.y == start.y &&
+            num_map_points_all > 1 &&
+            current_car.current_orientation != opposite_direction(start_orientation));
 }

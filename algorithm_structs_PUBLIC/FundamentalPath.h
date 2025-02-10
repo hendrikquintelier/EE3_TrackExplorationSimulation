@@ -16,7 +16,7 @@ typedef struct FundamentalPath {
 } FundamentalPath;
 
 // Function prototypes
-void initialize_fundamental_path(FundamentalPath *fp, struct MapPoint *start, float distance);
+void initialize_fundamental_path(FundamentalPath *fp, struct MapPoint *start, int distance);
 FundamentalPath* initialize_fundamental_paths(bool UltraSonicDetection[3]);
 
 // ✅ Now it's safe to use MapPoint in function signatures

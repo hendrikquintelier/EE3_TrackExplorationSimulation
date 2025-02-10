@@ -5,65 +5,68 @@
 #include "track_files_PRIVATE/track_navigation.h"
 #include "algorithm_structs_PUBLIC/MapPoint.h"
 
-// Function to rotate the car to a given direction
+/**
+ * @brief Rotates the car to face the specified direction.
+ *
+ * @param target_direction The desired orientation of the car.
+ */
 void rotate_to(Direction target_direction) {
-        current_car.current_orientation = target_direction;
+    current_car.current_orientation = target_direction;
 }
 
-
-// Function to navigate the car along a given path
+/**
+ * @brief Navigates the car along the given path.
+ *
+ * @param p Pointer to the Path structure containing the route.
+ */
 void navigate_path(const Path *p) {
+    // Validate the path before proceeding
     if (!p || !p->route || p->totalDistance == 0) {
-        printf("❌ Invalid path! Cannot navigate.\n");
         return;
     }
 
-    printf("\n🚗 Starting Navigation Along the Path...\n");
-
     // Iterate through each step in the path
-    for (int i = 0; i<p->totalDistance; i++) {
+    for (int i = 0; i < p->totalDistance; i++) {
         FundamentalPath *step = p->route[i];
 
-        if (current_car.current_location.x == p->end->location.x && current_car.current_location.y == p->end->location.y) {
+        // Stop if the car has reached the final destination
+        if (current_car.current_location.x == p->end->location.x &&
+            current_car.current_location.y == p->end->location.y) {
             break;
         }
+
+        // Validate the step before proceeding
         if (!step || !step->end) {
-            printf("❌ Invalid step detected! Stopping navigation.\n");
             return;
         }
 
-        printf("➡️ Moving from ID %d (%d, %d) to ID %d (%d, %d) via %s (Distance: %d)\n",
-               step->start->id, step->start->location.x, step->start->location.y,
-               step->end->id, step->end->location.x, step->end->location.y,
-               direction_to_string(step->direction), step->distance);
-
-        // Rotate the car to face the correct direction
+        // Rotate the car to align with the required direction
         rotate_to(step->direction);
 
-        // Move forward in the correct direction
+        // Move forward along the path
         for (int j = 0; j < step->distance; j++) {
             move_forward();
             print_grid();  // Visualize movement on the grid
         }
 
-        // Update the car's position
+        // Update the car's position after completing the movement
         current_car.current_location = step->end->location;
     }
 
-    printf("🏁 Navigation complete! Arrived at destination (%d, %d).\n",
-           p->end->location.x, p->end->location.y);
-
+    // Adjust the car's orientation after reaching the final destination
     turn_to_undiscovered_fundamental_path(p->end);
 }
 
-
-
+/**
+ * @brief Rotates the car towards an unexplored fundamental path at the given MapPoint.
+ *
+ * @param mp Pointer to the MapPoint structure.
+ */
 void turn_to_undiscovered_fundamental_path(MapPoint* mp) {
-
-    for (int i =0; i < mp->numberOfPaths; i++) {
-        if (mp->paths[i].end==NULL) {
-            Direction dir =  mp->paths[i].direction;
-            current_car.current_orientation = dir;
+    for (int i = 0; i < mp->numberOfPaths; i++) {
+        // Check for an unexplored path
+        if (mp->paths[i].end == NULL) {
+            current_car.current_orientation = mp->paths[i].direction;
             break;
         }
     }

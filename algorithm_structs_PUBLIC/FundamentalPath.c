@@ -46,7 +46,7 @@ int determine_distance_fundamentalpath(FundamentalPath *path) {
 
 
 // Initialize a FundamentalPath
-void initialize_fundamental_path(FundamentalPath *fp, MapPoint *start, float distance) {
+void initialize_fundamental_path(FundamentalPath *fp, MapPoint *start, int distance) {
     if (!fp) {
         perror("Null pointer passed to initialize_fundamental_path");
         return;
@@ -125,13 +125,16 @@ void update_latest_fundamental_path(MapPoint* current, MapPoint* former) {
         fc_pointer_fundamental_path->direction = fc_direction;
         fc_pointer_fundamental_path->distance = determine_distance_fundamentalpath(fc_pointer_fundamental_path);
 
-        // Dynamically add to former's path list
-        former->paths = realloc(former->paths, (former->numberOfPaths + 1) * sizeof(FundamentalPath));
-        if (!former->paths) {
-            perror("Failed to reallocate memory for former->paths");
-            exit(EXIT_FAILURE);
+        // Attempt to resize memory safely
+        FundamentalPath *newPaths = realloc(former->paths, (former->numberOfPaths + 1) * sizeof(FundamentalPath));
+        if (!newPaths) {  // Check if realloc failed
+            perror("Error: Failed to allocate memory for FundamentalPaths");
+            exit(EXIT_FAILURE);  // Handle error safely
         }
-        former->paths[former->numberOfPaths++] = *fc_pointer_fundamental_path;
+
+        // Only update former->paths if realloc succeeded
+        former->paths = newPaths;
+
     }
 
     // Check if the path from current -> former already exists
@@ -159,13 +162,16 @@ void update_latest_fundamental_path(MapPoint* current, MapPoint* former) {
         cf_pointer_fundamental_path->direction = cf_direction;
         cf_pointer_fundamental_path->distance = fc_pointer_fundamental_path->distance; // Copy distance
 
-        // Dynamically add to current's path list
-        current->paths = realloc(current->paths, (current->numberOfPaths + 1) * sizeof(FundamentalPath));
-        if (!current->paths) {
-            perror("Failed to reallocate memory for current->paths");
-            exit(EXIT_FAILURE);
+        // Attempt to resize memory safely
+        FundamentalPath *newPaths = realloc(current->paths, (current->numberOfPaths + 1) * sizeof(FundamentalPath));
+        if (!newPaths) {  // Check if realloc failed
+            perror("Error: Failed to allocate memory for FundamentalPaths");
+            exit(EXIT_FAILURE);  // Handle error safely
         }
-        current->paths[current->numberOfPaths++] = *cf_pointer_fundamental_path;
+
+        // Only update current->paths if realloc succeeded
+        current->paths = newPaths;
+
     }
 }
 

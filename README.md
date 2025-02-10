@@ -1,7 +1,7 @@
 # EE3 Track Exploration Simulation
 
 🚗 **Autonomous Track Exploration & Navigation Algorithm** 🚗  
-*A project by Hendrik Quintelier (2025) – Undergraduate Dissertation*
+*A project by Hendrik Quintelier (2025) – part of my Undergraduate Dissertation*
 
 ## 📌 Overview
 

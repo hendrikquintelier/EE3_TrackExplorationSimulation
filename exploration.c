@@ -15,6 +15,7 @@
 
 #include "globals.h"
 
+int checkValidTrackCompletion();
 
 MapPoint *former_map_point = NULL; // Keep track of the previous MapPoint
 
@@ -173,12 +174,22 @@ void start_exploration() {
             break;
         }
 
-        if (current_car.current_location.x ==  start.x && current_car.current_location.y == start.y && num_map_points_all>1 && num_map_points_tbd == 0) {
-            printf("Track completion!\n");
-            break;
-        }
+        if ( checkValidTrackCompletion()){
+                printf("Track completion!\n");
+                break;
+            }
+
 
         usleep(500000);  // Slow down movement for realism
     }
 }
 
+int checkValidTrackCompletion() {
+    if (current_car.current_location.x ==  start.x && current_car.current_location.y == start.y && num_map_points_all>1 &&
+        (current_car.current_orientation != opposite_direction(start_orientation) )) {
+
+            return 1;
+        }
+    return 0;
+
+}

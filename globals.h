@@ -13,6 +13,7 @@ extern int num_map_points_all, capacity_map_points_all;
 extern int num_all_fundamental_paths, capacity_all_fundamental_paths;
 
 extern Location start;
+extern Direction start_orientation;
 
 // Define the Car struct
 typedef struct {

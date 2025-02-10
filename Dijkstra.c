@@ -171,9 +171,9 @@ Path* find_shortest_path_to_mappoint_tbd(MapPoint *current_map_point) {
     // Count path length
     while (step != current_map_point) {
         if (!parents[step->id]) {
+            free(bestPath);
             free(distances);
             free(parents);
-            free(bestPath);
             return NULL;
         }
         pathLength++;
@@ -205,7 +205,12 @@ Path* find_shortest_path_to_mappoint_tbd(MapPoint *current_map_point) {
 
         for (int i = 0; i < prev->numberOfPaths; i++) {
             if (prev->paths[i].end == step) {
-                bestPath->route[pathIndex] = &prev->paths[i];
+                bestPath->route[pathIndex] = malloc(sizeof(FundamentalPath));
+                if (!bestPath->route[pathIndex]) {
+                    fprintf(stderr, "Error: Memory allocation failed for route[%d]\n", pathIndex);
+                    return NULL;
+                }
+                *bestPath->route[pathIndex] = prev->paths[i];
                 pathIndex--;
                 break;
             }

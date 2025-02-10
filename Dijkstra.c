@@ -181,6 +181,7 @@ Path* find_shortest_path_to_mappoint_tbd(MapPoint *current_map_point) {
     }
 
     // Allocate memory for the route
+    bestPath->totalSteps = pathLength;
     bestPath->route = malloc(pathLength * sizeof(FundamentalPath *));
     if (!bestPath->route) {
         free(bestPath);

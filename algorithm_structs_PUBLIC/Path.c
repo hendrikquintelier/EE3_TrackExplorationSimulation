@@ -22,6 +22,7 @@ void initialize_path(Path *path, MapPoint *start, MapPoint *end) {
     path->start = start;
     path->end = end;
     path->totalDistance = 0;  // Default total distance
+    path->totalSteps = 0;
 
     // Placeholder for actual path-finding algorithm
     path->route = NULL;

@@ -26,7 +26,7 @@ void navigate_path(const Path *p) {
     }
 
     // Iterate through each step in the path
-    for (int i = 0; i < p->totalDistance; i++) {
+    for (int i = 0; i < p->totalSteps; i++) {
         FundamentalPath *step = p->route[i];
 
         // Stop if the car has reached the final destination

@@ -73,3 +73,8 @@
 134	300	7609181210942571	untitled.exe	3e1d10aa0035ed0b
 6	121	7609182316904709	CMakeFiles/untitled.dir/track_files_PRIVATE/track_navigation.c.obj	13b6c7e8c75b9ce9
 121	289	7609182318052772	untitled.exe	3e1d10aa0035ed0b
+6	134	7609238173305336	CMakeFiles/untitled.dir/algorithm_structs_PUBLIC/Path.c.obj	f3c9d06663df77ca
+32	140	7609238173565506	CMakeFiles/untitled.dir/navigate.c.obj	1dc054c28a234e6a
+24	157	7609238173491775	CMakeFiles/untitled.dir/Dijkstra.c.obj	aa29b5311245c6ff
+15	166	7609238173408317	CMakeFiles/untitled.dir/exploration.c.obj	1ef86d60364d6357
+166	348	7609238174915377	untitled.exe	3e1d10aa0035ed0b

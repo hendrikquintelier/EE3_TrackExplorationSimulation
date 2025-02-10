@@ -9,6 +9,7 @@ typedef struct Path {
     MapPoint *end;
     FundamentalPath **route;
     int totalDistance;
+    int totalSteps;
 } Path;
 
 void initialize_path(Path *path, MapPoint *start, MapPoint *end);

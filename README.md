@@ -136,8 +136,84 @@ The exploration algorithm autonomously navigates the car through a predefined tr
 | Forward is blocked | Turn left or right (`rotate_left()` / `rotate_right()`) |
 | At a MapPoint | Record and check for unexplored paths (`is_map_point()`) |
 | No paths left to explore | Use **Dijkstra’s Algorithm** to find the next point |
+# 🚀 Future Goals: Dual-Core Asynchronous Thread Optimization  
 
-This structured approach ensures **efficient exploration**, **dynamic pathfinding**, and **adaptive decision-making**, enabling the car to **navigate and optimize laps intelligently**. 🚀  
+## 🔮 Vision for Advanced Dual-Core Optimization  
+The **current system** effectively utilizes a **single-core exploration approach**, ensuring the car efficiently maps the track and optimizes navigation. However, **future improvements** will focus on harnessing the full **dual-core capabilities** of the **ESP32-S3** by implementing **asynchronous multithreading** for real-time responsiveness and **greater efficiency**.
+
+---
+
+## 🎯 Future Enhancements with Dual-Core Asynchronous Processing  
+The next evolution of this system will leverage **ESP32-S3's two cores** to execute parallel tasks efficiently. Below is the **future system goal**, where multiple threads will **run asynchronously** for optimal track exploration and navigation.
+
+### 🔀 Parallel Task Distribution  
+| **Task**                  | **Core** | **Type** | **Purpose** |
+|---------------------------|---------|----------|-------------|
+| **Sensor Data Acquisition** | Core 0 | High-Priority Interrupt | Uses **asynchronous sensor fusion** to handle real-time ultrasonic, IMU, and wheel encoder readings. |
+| **Motor Control (PID-based)** | Core 1 | High-Priority Task | Implements **PID feedback loops** for fine-tuned movement control. |
+| **Navigation Algorithm** | Core 1 | Medium-Priority Task | Handles real-time **decision-making** based on sensor inputs and track mapping. |
+| **Data Logging & Communication** | Core 0 | Low-Priority Background Task | **Transmits data over WiFi/Bluetooth** and logs exploration performance. |
+
+---
+
+## 🛠 Key Upgrades: Dual-Core Processing for Real-Time Performance  
+The **primary challenge** in the future will be **ensuring non-blocking execution** of sensor inputs while maintaining **precise motor control**. The following improvements will be implemented:
+
+### 1️⃣ Asynchronous Sensor Data Handling  
+- Instead of **polling** the ultrasonic sensors and IMU, the system will rely on **hardware interrupts**.
+- **Interrupt-Driven Approach**:
+  - **Ultrasonic Sensor ISR:** Reads distance data asynchronously.
+  - **IMU Data Ready ISR:** Updates yaw angle in real time.
+  - **Wheel Encoder ISR:** Updates speed and position tracking.
+
+#### 🚀 Benefits:  
+✅ Eliminates **blocking delays** in sensor processing.  
+✅ Enables **real-time sensor fusion** without affecting motor performance.  
+
+---
+
+### 2️⃣ PID Motor Control Optimization  
+- The **motor control system** will be handled by **Core 1**, operating independently of sensor tasks.
+- Uses a **closed-loop PID control** system for **adaptive speed regulation** and **precise turning**.
+
+#### 🚀 Benefits:  
+✅ Maintains **stable velocity & smooth turns**.  
+✅ Prevents **overcorrection & oscillation** due to drift errors.  
+
+---
+
+### 3️⃣ Navigation & Decision-Making Improvements  
+- The **navigation logic** will be executed **independently** on Core 1.
+- Utilizes **sensor fusion** to intelligently decide:
+  - When to turn or adjust speed.
+  - How to optimize the path **without blocking other tasks**.
+  - When to switch from **exploration mode** to **optimal lap execution mode**.
+
+#### 🚀 Benefits:  
+✅ **Reduces reaction time** in obstacle detection.  
+✅ **Optimizes decision-making speed** for track navigation.  
+
+---
+
+### 4️⃣ Data Logging & Remote Communication  
+- Core 0 will manage **data logging** and **WiFi/Bluetooth communication** without **disrupting** navigation.
+- This enables **real-time tracking & debugging** via a **remote dashboard**.
+
+#### 🚀 Benefits:  
+✅ Provides **real-time telemetry** for performance monitoring.  
+✅ Allows remote debugging & system adjustments.  
+
+---
+
+## 🌍 Final Vision: A Fully Optimized Dual-Core Racing AI  
+By integrating **asynchronous multithreading**, the **future system** will be capable of:  
+- **Real-time sensor fusion** without delays.  
+- **Non-blocking motor control** for smoother turns.  
+- **Predictive navigation** for efficient path execution.  
+- **Remote performance tracking** using telemetry.  
+
+🚀 **With these advancements, the system will be able to complete races faster and more efficiently than ever before!** 🚗💨  
+
 
 
 

@@ -69,11 +69,11 @@ The project is organized into separate modules for **algorithm structures, track
 #### 📁 `algorithm_structs_PUBLIC/`
 | File                    | Description |
 |-------------------------|----------------------------------------------------------------|
-| `FundamentalPath.c`     | Implements core path structure and connections between waypoints. |
+| `FundamentalPath.c`     | Implements core path structure and connections between mappoints. |
 | `FundamentalPath.h`     | Header file defining the `FundamentalPath` structure and functions. |
 | `MapPoint.c`            | Manages key track intersections for pathfinding. |
 | `MapPoint.h`            | Header file defining the `MapPoint` structure. |
-| `Path.c`                | Handles full track paths and connections. |
+| `Path.c`                | Handles full track paths and connections, existing of fundamental paths. |
 | `Path.h`                | Header file defining the `Path` structure and its operations. |
 
 #### 📁 `track_files_PRIVATE/`
